@@ -7,12 +7,21 @@
 
 #include "Gpio.h"
 
-Gpio::Gpio() {
-	// TODO Auto-generated constructor stub
+Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin) :
+		_port(port), _pin(pin) {
 
 }
 
 Gpio::~Gpio() {
-	// TODO Auto-generated destructor stub
+
 }
 
+void Gpio::init() {
+	GPIO_InitTypeDef gpio_init_type;
+	GPIO_StructInit(&gpio_init_type);
+
+	gpio_init_type.GPIO_Mode = GPIO_Mode_Out_PP;
+	gpio_init_type.GPIO_Pin = _pin;
+	GPIO_Init(_port, &gpio_init_type);
+
+}
