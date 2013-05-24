@@ -16,6 +16,7 @@ public:
 	Gpio(GPIO_TypeDef *port, uint16_t pin);
 	virtual ~Gpio();
 	void init();
+	void set(BitAction bit);
 
 private:
 	GPIO_TypeDef * const _port;
