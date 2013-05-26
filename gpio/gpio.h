@@ -13,7 +13,7 @@
 
 class Gpio {
 public:
-	Gpio(GPIO_TypeDef *port, uint16_t pin);
+	Gpio(GPIO_TypeDef *port, uint16_t pin, uint32_t rcc_apb2_periph);
 	virtual ~Gpio();
 	void init();
 	void set(BitAction bit);

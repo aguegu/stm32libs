@@ -5,10 +5,11 @@
  *      Author: agu
  */
 
-#include "Gpio.h"
+#include "gpio.h"
 
-Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin) :
+Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin, uint32_t rcc_apb2_periph) :
 		_port(port), _pin(pin) {
+	RCC_APB2PeriphClockCmd(rcc_apb2_periph, ENABLE);
 	this->init();
 }
 
