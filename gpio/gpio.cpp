@@ -30,6 +30,14 @@ void Gpio::set(BitAction bit) {
 	GPIO_WriteBit(_port, _pin, bit);
 }
 
-BitAction Gpio::get() {
+BitAction Gpio::getInput() {
 	return (BitAction)GPIO_ReadInputDataBit(_port, _pin);
+}
+
+BitAction Gpio::getOutput() {
+	return (BitAction)GPIO_ReadOutputDataBit(_port, _pin);
+}
+
+void Gpio::toggle() {
+	GPIO_WriteBit(_port, _pin, (BitAction)(!GPIO_ReadOutputDataBit(_port, _pin)));
 }

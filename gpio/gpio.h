@@ -17,7 +17,9 @@ public:
 	virtual ~Gpio();
 	void init(GPIOMode_TypeDef mode = GPIO_Mode_IN_FLOATING, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
 	void set(BitAction bit);
-	BitAction get();
+	void toggle();
+	BitAction getInput();
+	BitAction getOutput();
 
 private:
 	GPIO_TypeDef * const _port;
