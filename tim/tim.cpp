@@ -7,12 +7,11 @@
 
 #include "tim.h"
 
-Tim::Tim(TIM_TypeDef * tim, uint32_t rcc_apbx_periph) :
+Tim::Tim(TIM_TypeDef * tim, uint32_t rcc_apbx_periph,
+		void (*p)(uint32_t, FunctionalState)) :
 		_tim(tim) {
-	if (IS_RCC_APB1_PERIPH(rcc_apbx_periph))
-		RCC_APB1PeriphClockCmd(rcc_apbx_periph, ENABLE);
-	else
-		RCC_APB2PeriphClockCmd(rcc_apbx_periph, ENABLE);
+
+	(*p)(rcc_apbx_periph, ENABLE);
 }
 
 Tim::~Tim() {
