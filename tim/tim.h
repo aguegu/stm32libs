@@ -23,4 +23,24 @@ private:
 	TIM_TypeDef * const _tim;
 };
 
+class TimOc {
+public:
+	TimOc();
+	virtual ~TimOc();
+
+	void init(uint16_t oc_mode = TIM_OCMode_Timing, uint16_t output_state =
+			TIM_OutputState_Disable, uint16_t output_nstate =
+			TIM_OutputNState_Disable, uint16_t pulse = 0x0000,
+			uint16_t oc_polarity = TIM_OCPolarity_High, uint16_t oc_npolarity =
+					TIM_OCPolarity_High, uint16_t oc_idle_state =
+					TIM_OCIdleState_Reset, uint16_t oc_nidle_state =
+					TIM_OCNIdleState_Reset );
+
+	void apply(TIM_TypeDef * tim,
+			void (*p)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct));
+
+private:
+	TIM_OCInitTypeDef tim_oc_init_type;
+};
+
 #endif /* TIM_H_ */

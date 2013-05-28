@@ -21,8 +21,6 @@ public:
 	BitAction getInput();
 	BitAction getOutput();
 
-	/*I am in dev branch.*/
-
 private:
 	GPIO_TypeDef * const _port;
 	const uint16_t _pin;
