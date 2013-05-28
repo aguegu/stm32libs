@@ -39,6 +39,9 @@ void Usart::init(uint32_t baudrate, uint16_t word_length, uint16_t stop_bits,
 	usart_init_type.USART_HardwareFlowControl = hardware_flow_control;
 
 	USART_Init(_usart, &usart_init_type);
+
+	USART_Cmd(_usart, ENABLE);
+	USART_ITConfig(_usart, USART_IT_RXNE, ENABLE);
 }
 
 uint8_t Usart::available(void) {
