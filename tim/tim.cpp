@@ -21,6 +21,10 @@ Tim::~Tim() {
 void Tim::init(uint32_t real_clock, uint16_t real_period, uint16_t counter_mode,
 		uint16_t clock_division, uint8_t repition_counter) {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+
+	uint32_t prescaler = SystemCoreClock / real_clock - 1;
+	assert_param(prescaler < 65536);
+
 	TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock / real_clock - 1;
 	TIM_TimeBaseStructure.TIM_Period = real_period - 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = clock_division;
