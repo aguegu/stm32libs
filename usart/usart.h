@@ -11,7 +11,7 @@
 #include "stm32f10x_usart.h"
 
 struct ring_buff {
-	uint8_t *buffer;
+	uint16_t *buffer;
 	volatile uint8_t index_write;	// to receive the incoming byte
 	volatile uint8_t index_read;	// to send byte
 };
@@ -19,7 +19,7 @@ struct ring_buff {
 class Usart {
 public:
 	Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-			void (*p)(uint32_t, FunctionalState), uint8_t buff_size = 128);
+			void (*p)(uint32_t, FunctionalState), uint8_t buff_size = 64);
 	virtual ~Usart();
 
 	void init(uint32_t baudrate = 9600, uint16_t word_length =
@@ -29,8 +29,8 @@ public:
 			uint16_t hardware_flow_control = USART_HardwareFlowControl_None );
 
 	uint8_t available(void);
-	uint8_t write(uint8_t c);
-	uint8_t read(void);
+	void write(uint16_t c);
+	uint16_t read(void);
 	void transmit();
 	void receive();
 	void flush();

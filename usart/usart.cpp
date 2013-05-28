@@ -16,11 +16,11 @@ Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
 
 	_tx_buff.index_write = 0;
 	_tx_buff.index_read = 0;
-	_tx_buff.buffer = (uint8_t *) malloc(sizeof(uint8_t) * _buff_size);
+	_tx_buff.buffer = (uint16_t *) malloc(sizeof(uint16_t) * _buff_size);
 
 	_rx_buff.index_write = 0;
 	_rx_buff.index_read = 0;
-	_rx_buff.buffer = (uint8_t *) malloc(sizeof(uint8_t) * _buff_size);
+	_rx_buff.buffer = (uint16_t *) malloc(sizeof(uint16_t) * _buff_size);
 }
 
 Usart::~Usart() {
@@ -46,9 +46,9 @@ uint8_t Usart::available(void) {
 			% _buff_size;
 }
 
-uint8_t Usart::read(void) {
+uint16_t Usart::read(void) {
 	if (_rx_buff.index_write != _rx_buff.index_read) {
-		uint8_t c = _rx_buff.buffer[_rx_buff.index_read];
+		uint16_t c = _rx_buff.buffer[_rx_buff.index_read];
 		_rx_buff.index_read = (_rx_buff.index_read + 1) % _buff_size;
 		return c;
 	}
@@ -60,7 +60,7 @@ void Usart::flush() {
 		;
 }
 
-uint8_t Usart::write(uint8_t c) {
+void Usart::write(uint16_t c) {
 	uint8_t i = (_tx_buff.index_write + 1) % _buff_size;
 
 	while (i == _tx_buff.index_read)
@@ -70,14 +70,13 @@ uint8_t Usart::write(uint8_t c) {
 	_tx_buff.index_write = i;
 
 	USART_ITConfig(_usart, USART_IT_TXE, ENABLE);
-	return 1;
 }
 
 void Usart::transmit() {
 	if (_tx_buff.index_read == _tx_buff.index_write) {
 		USART_ITConfig(_usart, USART_IT_TXE, DISABLE);
 	} else {
-		uint8_t c = _tx_buff.buffer[_tx_buff.index_read];
+		uint16_t c = _tx_buff.buffer[_tx_buff.index_read];
 		_tx_buff.index_read = (_tx_buff.index_read + 1) % _buff_size;
 
 		USART_SendData(_usart, c);
@@ -89,8 +88,7 @@ void Usart::receive() {
 
 	// when buffer is full, next income would be ignored
 	if (i != _rx_buff.index_read) {
-		_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart)
-				& 0xff;
+		_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart);
 		_rx_buff.index_write = i;
 	}
 }
