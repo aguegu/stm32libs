@@ -69,33 +69,25 @@ uint8_t Usart::write(uint8_t c) {
 	_tx_buff.buffer[_tx_buff.index_write] = c;
 	_tx_buff.index_write = i;
 
-	//sbi(*_ucsrb, _udrie);
 	USART_ITConfig(_usart, USART_IT_TXE, ENABLE);
 	return 1;
 }
 
 void Usart::transmit() {
-	if (_tx_buff.index_write == _tx_buff.index_read) {
-		//cbi(*_ucsrb, _udrie);
+	if (_tx_buff.index_read == _tx_buff.index_write) {
 		USART_ITConfig(_usart, USART_IT_TXE, DISABLE);
-// Buffer empty, so disable interrupts
 	} else {
-// There is more data in the output buffer. Send the next byte
 		uint8_t c = _tx_buff.buffer[_tx_buff.index_read];
 		_tx_buff.index_read = (_tx_buff.index_read + 1) % _buff_size;
 
 		USART_SendData(_usart, c);
-		//*_udr = c;
 	}
 }
 
 void Usart::receive() {
 	uint8_t i = (_rx_buff.index_write + 1) % _buff_size;
 
-// if we should be storing the received character into the location
-// just before the tail (meaning that the head would advance to the
-// current location of the tail), we're about to overflow the buffer
-// and so we don't write the character or advance the head.
+	// when buffer is full, next income would be ignored
 	if (i != _rx_buff.index_read) {
 		_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart)
 				& 0xff;
