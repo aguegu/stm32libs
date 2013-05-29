@@ -65,7 +65,6 @@ void Usart::flush() {
 
 void Usart::write(uint16_t c) {
 	uint8_t i = (_tx_buff.index_write + 1) % _buff_size;
-
 	while (i == _tx_buff.index_read)
 		;
 

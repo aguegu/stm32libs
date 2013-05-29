@@ -19,8 +19,8 @@ struct ring_buff {
 class Usart {
 public:
 	Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-			void (*p)(uint32_t, FunctionalState), uint8_t buff_size = 64);
-	virtual ~Usart();
+			void (*p)(uint32_t, FunctionalState), uint8_t buff_size = 128);
+	~Usart();
 
 	void init(uint32_t baudrate = 9600, uint16_t word_length =
 			USART_WordLength_8b, uint16_t stop_bits = USART_StopBits_1,
@@ -30,6 +30,7 @@ public:
 
 	uint8_t available(void);
 	void write(uint16_t c);
+
 	uint16_t read(void);
 	void transmit();
 	void receive();
