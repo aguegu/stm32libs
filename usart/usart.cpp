@@ -6,11 +6,11 @@
  */
 
 #include "usart.h"
-#include "stdlib.h"
 
 Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-		void (*p)(uint32_t, FunctionalState), uint8_t buff_size) :
-		_usart(usart), _buff_size(buff_size) {
+		void (*p)(uint32_t, FunctionalState), uint8_t buff_size,
+		uint16_t time_out) :
+		_usart(usart), _buff_size(buff_size), _time_out(time_out) {
 
 	(*p)(rcc_apbx_periph, ENABLE);
 
@@ -49,7 +49,7 @@ uint8_t Usart::available(void) {
 			% _buff_size;
 }
 
-uint16_t Usart::read(void) {
+int Usart::read(void) {
 	if (_rx_buff.index_write != _rx_buff.index_read) {
 		uint16_t c = _rx_buff.buffer[_rx_buff.index_read];
 		_rx_buff.index_read = (_rx_buff.index_read + 1) % _buff_size;
@@ -93,4 +93,53 @@ void Usart::receive() {
 		_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart);
 		_rx_buff.index_write = i;
 	}
+}
+
+int Usart::timedRead() {
+	extern uint32_t millis;
+	uint32_t start = millis;
+	uint16_t t = _time_out;
+
+	while (t) {
+		int c = read();
+		if (c >= 0)
+			return c;
+
+		if (millis - start) {
+			t--;
+			start++;
+		}
+	}
+	return -1; // -1 indicates timeout
+}
+
+int Usart::readBytes(uint8_t *buffer, int length) {
+	int index = 0;
+	while (index < length) {
+		int c = timedRead();
+		if (c == -1)
+			break;
+		*buffer++ = (uint8_t) c;
+		index++;
+	}
+	return index;
+}
+
+// as readBytes with terminator character
+// terminates if length characters have been read, timeout, or if the terminator character detected
+// returns the number of characters placed in the buffer (0 means no valid data found)
+
+int Usart::readBytesUntil(char terminator, char *buffer, int length) {
+
+	int index = 0;
+	while (index < length) {
+		int c = timedRead();
+		if (c == -1)
+			return -1;
+		if (c == terminator)
+			break;
+		*buffer++ = (char) c;
+		index++;
+	}
+	return index; // return number of characters, not including null terminator
 }
