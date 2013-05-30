@@ -3,7 +3,7 @@
 #include <stm32f10x_rcc.h>
 #include <stm32f10x_gpio.h>
 
-#include "I2C.h"
+#include "i2c/i2c.h"
 
 #define Timed(x) Timeout = 0xFFFF; while (x) { if (Timeout-- == 0) goto errReturn;}
 
@@ -238,10 +238,7 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
         GPIO_Init(GPIOB, &GPIO_InitStructure);
 
         /* I2C1 Reset */
-
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
-
+        I2C_DeInit(I2C1);
       }
       else {
 
@@ -258,9 +255,7 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress)
 
         /* I2C2  Reset */
 
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, ENABLE);
-        RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C2, DISABLE);
-
+        I2C_DeInit(I2C2);
       }
 
     /* Configure I2Cx                */
