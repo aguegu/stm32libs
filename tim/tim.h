@@ -14,7 +14,7 @@ class Tim {
 public:
 	Tim(TIM_TypeDef * tim, uint32_t rcc_apbx_periph,
 			void (*p)(uint32_t, FunctionalState));
-	virtual ~Tim();
+	~Tim();
 	void init(uint32_t real_clock = SystemCoreClock, uint16_t real_period = 0,
 			uint16_t counter_mode = TIM_CounterMode_Up,
 			uint16_t clock_division = TIM_CKD_DIV1, uint8_t repition_counter =
@@ -26,7 +26,7 @@ private:
 class TimOc {
 public:
 	TimOc();
-	virtual ~TimOc();
+	~TimOc();
 
 	void init(uint16_t oc_mode = TIM_OCMode_Timing, uint16_t output_state =
 			TIM_OutputState_Disable, uint16_t output_nstate =

@@ -13,7 +13,7 @@
 class Nvic {
 public:
 	Nvic();
-	virtual ~Nvic();
+	~Nvic();
 	void init(uint8_t NVIC_IRQChannel,
 			uint8_t NVIC_IRQChannelPreemptionPriority,
 			uint8_t NVIC_IRQChannelSubPriority,
