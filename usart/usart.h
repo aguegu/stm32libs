@@ -35,7 +35,6 @@ public:
 	void write(uint16_t c);
 	int read(void);
 
-
 	int timedRead();
 
 	void transmit();

@@ -13,6 +13,10 @@ I2c::I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout,
 	RCC_APB1PeriphClockCmd(rcc_apb1periph_i2cx, ENABLE);
 }
 
+I2c::~I2c() {
+
+}
+
 void I2c::init(uint16_t mode, uint32_t clock_speed, uint16_t ack,
 		uint16_t acknowledged_address, uint16_t duty_cycle) {
 
