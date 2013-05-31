@@ -5,6 +5,8 @@
 
 #include "i2c/i2c.h"
 
+#define within(time, fun) for (t = (time); (fun) && --t;)
+
 I2c::I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout,
 		uint16_t long_timeout) :
 		_i2c(i2c), _FLAG_TIMEOUT(flat_timeout), _LONG_TIMEOUT(long_timeout) {
@@ -32,77 +34,64 @@ void I2c::init(uint16_t mode, uint32_t clock_speed, uint16_t ack,
 uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length) {
 	vu32 t = 0;
 
-	if (length) {
-		for (t = _LONG_TIMEOUT; I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ) && --t;)
-			;
-		if (!t) return 0;
+	if (!length) return 0;
 
-		I2C_GenerateSTART(_i2c, ENABLE);
-		for (t = _FLAG_TIMEOUT;
-				!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ) && --t;)
-			;
-		if (!t) return 1;
+	within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ));
+	if (!t) return 0;
 
-		I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Transmitter );
-		for (t = _FLAG_TIMEOUT;
-				!I2C_CheckEvent(_i2c,
-						I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED ) && --t;)
-			;
-		if (!t) return 2;
+	I2C_GenerateSTART(_i2c, ENABLE);
+	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));;
+	if (!t) return 1;
 
-		do {
-			I2C_SendData(_i2c, *buf++);
-			for (t = _FLAG_TIMEOUT; !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF ) && --t;)
-				;
-			if (!t) return 3;
-		} while (--length);
+	I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Transmitter );
+	within(_FLAG_TIMEOUT,
+			!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED ));
+	if (!t) return 2;
 
-		I2C_GenerateSTOP(_i2c, ENABLE);
-		for (t = _FLAG_TIMEOUT; I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF ) && --t;)
-			;
-		if (!t) return 4;
-	}
+	do {
+		I2C_SendData(_i2c, *buf++);
+		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF ));
+		if (!t) return 3;
+	} while (--length);
+
+	I2C_GenerateSTOP(_i2c, ENABLE);
+	within(_LONG_TIMEOUT, I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF ));
+	if (!t) return 4;
+
 	return 5;
 }
 
 uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 	vu32 t = 0;
-	if (length) {
+	if (!length) return 0;
 
-		for (t = _LONG_TIMEOUT; I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ) && --t;)
-			;
-		if (!t) return 0;
+	within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ));
+	if (!t) return 0;
 
-		I2C_AcknowledgeConfig(_i2c, ENABLE);
-		I2C_NACKPositionConfig(_i2c, I2C_NACKPosition_Current );
-		I2C_GenerateSTART(_i2c, ENABLE);
+	I2C_AcknowledgeConfig(_i2c, ENABLE);
+	I2C_NACKPositionConfig(_i2c, I2C_NACKPosition_Current );
+	I2C_GenerateSTART(_i2c, ENABLE);
 
-		for (t = _FLAG_TIMEOUT;
-				!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ) && --t;)
-			;
-		if (!t) return 1;
+	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
+	if (!t) return 1;
 
-		I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Receiver );
-		for (t = _FLAG_TIMEOUT; !I2C_GetFlagStatus(_i2c, I2C_FLAG_ADDR ) && --t;)
-			;
-		if (!t) return 2;
+	I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Receiver );
+	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_ADDR ));
+	if (!t) return 2;
 
-		I2C_AcknowledgeConfig(_i2c, DISABLE);
+	I2C_AcknowledgeConfig(_i2c, DISABLE);
 
-		__disable_irq();
-		(void) _i2c->SR2;
-		I2C_GenerateSTOP(_i2c, ENABLE);
-		__enable_irq();
+	__disable_irq();
+	(void) _i2c->SR2;
+	I2C_GenerateSTOP(_i2c, ENABLE);
+	__enable_irq();
 
-		for (t = _FLAG_TIMEOUT; !I2C_GetFlagStatus(_i2c, I2C_FLAG_RXNE ) && --t;)
-			;
-		if (!t) return 3;
+	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_RXNE ));
+	if (!t) return 3;
 
-		*data = I2C_ReceiveData(_i2c);
-	}
+	*data = I2C_ReceiveData(_i2c);
 
-	for (t = _FLAG_TIMEOUT; I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ) && --t;)
-		;
+	within(_FLAG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ));
 	if (!t) return 4;
 
 	return 5;

@@ -3,20 +3,10 @@
 
 #include <stm32f10x_i2c.h>
 
-typedef enum {
-	Error = 0, Success = !Error
-} Status;
-
-Status I2C_Read(I2C_TypeDef* I2Cx, uint8_t* buf, uint32_t nbuf,
-		uint8_t SlaveAddress);
-Status I2C_Write(I2C_TypeDef* I2Cx, const uint8_t* buf, uint32_t nbuf,
-		uint8_t SlaveAddress);
-void I2C_LowLevel_Init(int ClockSpeed, int OwnAddress);
-
 class I2c {
 public:
 	I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout =
-			0x1000, uint16_t long_timeout = 0xf000);
+			0x100, uint16_t long_timeout = 0x200);
 	~I2c();
 	void init(uint16_t mode = I2C_Mode_I2C, uint32_t clock_speed = 100000,
 			uint16_t ack = I2C_Ack_Enable, uint16_t acknowledged_address = 0,
