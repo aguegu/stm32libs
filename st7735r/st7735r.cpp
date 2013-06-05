@@ -109,8 +109,8 @@ void St7735r::init() {
 
 	for (const ST7735_cmdBuf * cmd = initializers; cmd->command; cmd++) {
 		write8(0, &(cmd->command), 1);
-//		if (cmd->len) write8(1, cmd->data, cmd->len);
-//		if (cmd->delay) delay(cmd->delay);
+		if (cmd->len) write8(1, cmd->data, cmd->len);
+		if (cmd->delay) delay(cmd->delay);
 	}
 }
 

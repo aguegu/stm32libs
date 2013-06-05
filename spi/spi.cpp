@@ -7,7 +7,8 @@
 
 #include "spi.h"
 
-Spi::Spi(SPI_TypeDef * spi, uint32_t rcc_apbx_periph_spi, void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState)) :
+Spi::Spi(SPI_TypeDef * spi, uint32_t rcc_apbx_periph_spi,
+		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState)) :
 		_spi(spi) {
 	(*rcc_apbx_periph_clock_cmd)(rcc_apbx_periph_spi, ENABLE);
 }
@@ -39,7 +40,7 @@ void Spi::init(uint16_t direction, uint16_t mode, uint16_t data_size,
 void Spi::write8(const uint8_t * out, uint8_t length, uint8_t * in) {
 	SPI_DataSizeConfig(_spi, SPI_DataSize_8b );
 	while (length--) {
-		while (SPI_I2S_GetFlagStatus(_spi, SPI_I2S_FLAG_TXE ) == RESET)
+		while (!SPI_I2S_GetFlagStatus(_spi, SPI_I2S_FLAG_TXE ))
 			;
 		SPI_I2S_SendData(_spi, *out++);
 		if (in) {
