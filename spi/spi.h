@@ -12,7 +12,8 @@
 
 class Spi {
 public:
-	Spi(SPI_TypeDef * spi);
+	Spi(SPI_TypeDef * spi, uint32_t rcc_apbx_periph_spi,
+			void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState));
 	void init(uint16_t direction = SPI_Direction_2Lines_FullDuplex,
 			uint16_t mode = SPI_Mode_Slave,
 			uint16_t data_size = SPI_DataSize_8b, uint16_t cpol = SPI_CPOL_Low,

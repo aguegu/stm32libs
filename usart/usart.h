@@ -20,7 +20,7 @@ struct ring_buff {
 class Usart {
 public:
 	Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-			void (*p)(uint32_t, FunctionalState), uint8_t buff_size = 128, uint16_t time_out = 1000);
+			void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState), uint8_t buff_size = 128, uint16_t time_out = 1000);
 	~Usart();
 
 	void init(uint32_t baudrate = 9600, uint16_t word_length =

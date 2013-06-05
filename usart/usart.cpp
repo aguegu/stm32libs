@@ -8,11 +8,11 @@
 #include "usart.h"
 
 Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-		void (*p)(uint32_t, FunctionalState), uint8_t buff_size,
+		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState), uint8_t buff_size,
 		uint16_t time_out) :
 		_usart(usart), _buff_size(buff_size), _time_out(time_out) {
 
-	(*p)(rcc_apbx_periph, ENABLE);
+	(*rcc_apbx_periph_clock_cmd)(rcc_apbx_periph, ENABLE);
 
 	_tx_buff.index_write = 0;
 	_tx_buff.index_read = 0;
