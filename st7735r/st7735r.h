@@ -24,9 +24,10 @@ public:
 	void init();
 	void write8(uint8_t is_data, const uint8_t * data, uint8_t length);
 	void write16(uint8_t is_data, const uint16_t * data, uint8_t length);
+	void write16(uint8_t is_data, const uint16_t data);
 	void command(uint8_t cmd);
-	void setAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
-	void pushColor(uint16_t color);
+	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+	void pushColor(uint16_t color, uint16_t length);
 private:
 	Spi _spi;
 	Gpio _pin_ss;
