@@ -56,10 +56,10 @@ static const ST7735_cmdBuf initializers[] = {
 		{ ST7735_MADCTL, 0, 1, { MADVAL(MADCTLGRAPHICS) } },
 		// Color mode 16 bit (10.1.30
 		{ ST7735_COLMOD, 0, 1, { 0x05 } },
-		// Column address set 0..127
-		{ ST7735_CASET, 0, 4, { 0x00, 0x00, 0x00, 0x7F } },
-		// Row address set 0..127
-		{ ST7735_RASET, 0, 4, { 0x00, 0x00, 0x00, 0x7F } },
+//		// Column address set 0..127
+//		{ ST7735_CASET, 0, 4, { 0x00, 0x00, 0x00, 0x7F } },
+//		// Row address set 0..127
+//		{ ST7735_RASET, 0, 4, { 0x00, 0x00, 0x00, 0x7F } },
 		// GMCTRP1 Gamma correction
 		{ 0xE0, 0, 16, { 0x02, 0x1C, 0x07, 0x12, 0x37, 0x32, 0x29, 0x2D, 0x29,
 				0x25, 0x2B, 0x39, 0x00, 0x01, 0x03, 0x10 } },
