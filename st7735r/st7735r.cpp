@@ -73,8 +73,10 @@ static const ST7735_cmdBuf initializers[] = {
 		// End
 		{ 0, 0, 0, { 0 } } };
 
-St7735r::St7735r(Spi & spi, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs) :
-		_spi(spi), _pin_ss(pin_ss), _pin_reset(pin_reset), _pin_rs(pin_rs) {
+St7735r::St7735r(Spi & spi, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs,
+		uint16_t offset_x, uint16_t offset_y) :
+		_spi(spi), _pin_ss(pin_ss), _pin_reset(pin_reset), _pin_rs(pin_rs), _offset_x(
+				offset_x), _offset_y(offset_y) {
 }
 
 St7735r::~St7735r() {
@@ -100,30 +102,31 @@ void St7735r::init() {
 	delay(10);
 
 	for (const ST7735_cmdBuf * cmd = initializers; cmd->command; cmd++) {
-		write8(0, &(cmd->command), 1);
+		this->command(cmd->command);
 		if (cmd->len) write8(1, cmd->data, cmd->len);
 		if (cmd->delay) delay(cmd->delay);
 	}
 }
 
-void St7735r::write8(uint8_t is_data, const uint8_t * data, uint8_t length) {
+void St7735r::write8(uint8_t is_data, const uint8_t * data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
 	_spi.write8(data, length);
 	_pin_ss.set(Bit_SET);
 }
 
-void St7735r::write16(uint8_t is_data, const uint16_t * data, uint8_t length) {
+void St7735r::write16(uint8_t is_data, const uint16_t * data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
 	_spi.write16(data, length);
 	_pin_ss.set(Bit_SET);
 }
 
-void St7735r::write16(uint8_t is_data, const uint16_t data) {
+void St7735r::write16(uint8_t is_data, const uint16_t data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
-	_spi.write16(&data, 1);
+	while (length--)
+		_spi.write16(&data, 1);
 	_pin_ss.set(Bit_SET);
 }
 
@@ -135,21 +138,12 @@ void St7735r::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
 		uint16_t y1) {
 
 	command(ST7735_CASET);
-	this->write16(1, x0 + 2);
-	this->write16(1, x1 + 2);
+	this->write16(1, x0 + _offset_x);
+	this->write16(1, x1 + _offset_x);
 
 	command(ST7735_RASET);
-	this->write16(1, y0 + 3);
-	this->write16(1, y1 + 3);
+	this->write16(1, y0 + _offset_y);
+	this->write16(1, y1 + _offset_y);
 
 	command(ST7735_RAMWR);
 }
-
-void St7735r::pushColor(uint16_t color, uint16_t length) {
-	_pin_rs.set(Bit_SET);
-	_pin_ss.set(Bit_RESET);
-	while (length--)
-		_spi.write16(&color, 1);
-	_pin_ss.set(Bit_SET);
-}
-

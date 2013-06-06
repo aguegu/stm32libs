@@ -22,8 +22,8 @@ public:
 			uint16_t first_bit = SPI_FirstBit_MSB, uint16_t crc_polynomial = 7);
 	~Spi();
 
-	void write8(const uint8_t * out, uint8_t length, uint8_t * in = 0);
-	void write16(const uint16_t * out, uint8_t length, uint16_t * in = 0);
+	void write8(const uint8_t * out, uint16_t length, uint8_t * in = 0);
+	void write16(const uint16_t * out, uint16_t length, uint16_t * in = 0);
 private:
 	SPI_TypeDef * const _spi;
 };
