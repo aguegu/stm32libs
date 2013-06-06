@@ -7,8 +7,8 @@
 
 #include "dma.h"
 
-Dma::Dma(DMA_Channel_TypeDef * dma, uint32_t rcc_apb_periph_dmax) :
-		_dma(dma) {
+Dma::Dma(DMA_Channel_TypeDef * dma, uint32_t rcc_apb_periph_dmax, uint32_t flag) :
+		_dma(dma), _flag(flag) {
 	RCC_AHBPeriphClockCmd(rcc_apb_periph_dmax, ENABLE);
 }
 
@@ -39,9 +39,20 @@ void Dma::init(uint32_t peripheral_base_addr, uint32_t memory_base_addr,
 	dma_init_type.DMA_MemoryDataSize = memory_data_size;
 
 	dma_init_type.DMA_Mode = mode;
-	dma_init_type.DMA_Priority = m2m;
-	dma_init_type.DMA_M2M = DMA_M2M_Disable;
+	dma_init_type.DMA_Priority = priority;
+	dma_init_type.DMA_M2M = m2m;
 
 	DMA_Init(_dma, &dma_init_type);
+
 }
 
+DMA_Channel_TypeDef * const Dma::base() {
+	return _dma;
+}
+
+void Dma::run() {
+	DMA_Cmd(_dma, ENABLE);
+	while (!DMA_GetFlagStatus(_flag))
+		;
+	DMA_Cmd(_dma, DISABLE);
+}

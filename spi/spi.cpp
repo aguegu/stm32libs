@@ -64,3 +64,7 @@ void Spi::write16(const uint16_t * out, uint16_t length, uint16_t * in) {
 		}
 	}
 }
+
+ SPI_TypeDef * const Spi::base() {
+	return _spi;
+}

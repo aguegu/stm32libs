@@ -11,10 +11,11 @@
 #include "stm32-template.h"
 #include "spi/spi.h"
 #include "gpio/gpio.h"
+#include "dma/dma.h"
 
 class St7735r {
 public:
-	St7735r(Spi & spi, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs, uint16_t offset_x = 2, uint16_t offset_y = 3);
+	St7735r(Spi & spi, Dma & dma, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs, uint16_t offset_x = 2, uint16_t offset_y = 3);
 	virtual ~St7735r();
 	void init();
 	void write8(uint8_t is_data, const uint8_t * data, uint16_t length);
@@ -24,6 +25,7 @@ public:
 	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 private:
 	Spi & _spi;
+	Dma & _dma;
 	Gpio & _pin_ss;
 	Gpio & _pin_reset;
 	Gpio & _pin_rs;

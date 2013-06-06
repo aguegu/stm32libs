@@ -73,10 +73,10 @@ static const ST7735_cmdBuf initializers[] = {
 		// End
 		{ 0, 0, 0, { 0 } } };
 
-St7735r::St7735r(Spi & spi, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs,
-		uint16_t offset_x, uint16_t offset_y) :
-		_spi(spi), _pin_ss(pin_ss), _pin_reset(pin_reset), _pin_rs(pin_rs), _offset_x(
-				offset_x), _offset_y(offset_y) {
+St7735r::St7735r(Spi & spi, Dma & dma, Gpio &pin_ss, Gpio &pin_reset,
+		Gpio &pin_rs, uint16_t offset_x, uint16_t offset_y) :
+		_spi(spi), _dma(dma), _pin_ss(pin_ss), _pin_reset(pin_reset), _pin_rs(
+				pin_rs), _offset_x(offset_x), _offset_y(offset_y) {
 }
 
 St7735r::~St7735r() {
@@ -92,6 +92,8 @@ void St7735r::init() {
 	_spi.init(SPI_Direction_2Lines_FullDuplex, SPI_Mode_Master, SPI_DataSize_8b,
 			SPI_CPOL_Low, SPI_CPHA_1Edge, SPI_NSS_Soft, SPI_BaudRatePrescaler_2,
 			SPI_FirstBit_MSB, 7);
+
+	SPI_I2S_DMACmd(_spi.base(), SPI_I2S_DMAReq_Tx, ENABLE);
 
 	_pin_ss.set(Bit_SET);
 	_pin_reset.set(Bit_SET);
@@ -125,8 +127,17 @@ void St7735r::write16(uint8_t is_data, const uint16_t * data, uint16_t length) {
 void St7735r::write16(uint8_t is_data, const uint16_t data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
-	while (length--)
-		_spi.write16(&data, 1);
+//	while (length--)
+//		_spi.write16(&data, 1);
+
+	_dma.init((uint32_t) &(_spi.base()->DR), (uint32_t) &data,
+			DMA_DIR_PeripheralDST, length, DMA_PeripheralInc_Disable,
+			DMA_MemoryInc_Disable, DMA_PeripheralDataSize_HalfWord,
+			DMA_MemoryDataSize_HalfWord );
+
+	SPI_DataSizeConfig(_spi.base(), SPI_DataSize_16b );
+	_dma.run();
+
 	_pin_ss.set(Bit_SET);
 }
 

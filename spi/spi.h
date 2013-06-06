@@ -24,6 +24,7 @@ public:
 
 	void write8(const uint8_t * out, uint16_t length, uint8_t * in = 0);
 	void write16(const uint16_t * out, uint16_t length, uint16_t * in = 0);
+	SPI_TypeDef * const base();
 private:
 	SPI_TypeDef * const _spi;
 };
