@@ -73,16 +73,8 @@ static const ST7735_cmdBuf initializers[] = {
 		// End
 		{ 0, 0, 0, { 0 } } };
 
-St7735r::St7735r(SPI_TypeDef * spi, uint32_t spi_rcc_apb2periph_spi,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
-		GPIO_TypeDef *ss_port, uint16_t ss_pin, uint32_t ss_rcc_apb2_periph,
-		GPIO_TypeDef *reset_port, uint16_t reset_pin,
-		uint32_t reset_rcc_apb2_periph, GPIO_TypeDef *rs_port, uint16_t rs_pin,
-		uint32_t rs_rcc_apb2_periph) :
-		_spi(spi, spi_rcc_apb2periph_spi, rcc_apbx_periph_clock_cmd), _pin_ss(
-				ss_port, ss_pin, ss_rcc_apb2_periph), _pin_reset(reset_port,
-				reset_pin, reset_rcc_apb2_periph), _pin_rs(rs_port, rs_pin,
-				rs_rcc_apb2_periph) {
+St7735r::St7735r(Spi & spi, Gpio &pin_ss, Gpio &pin_reset, Gpio &pin_rs) :
+		_spi(spi), _pin_ss(pin_ss), _pin_reset(pin_reset), _pin_rs(pin_rs) {
 }
 
 St7735r::~St7735r() {
@@ -96,8 +88,8 @@ void St7735r::init() {
 	_pin_rs.init(GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
 
 	_spi.init(SPI_Direction_2Lines_FullDuplex, SPI_Mode_Master, SPI_DataSize_8b,
-			SPI_CPOL_Low, SPI_CPHA_1Edge, SPI_NSS_Soft,
-			SPI_BaudRatePrescaler_2, SPI_FirstBit_MSB, 7);
+			SPI_CPOL_Low, SPI_CPHA_1Edge, SPI_NSS_Soft, SPI_BaudRatePrescaler_2,
+			SPI_FirstBit_MSB, 7);
 
 	_pin_ss.set(Bit_SET);
 	_pin_reset.set(Bit_SET);
@@ -139,11 +131,12 @@ void St7735r::command(uint8_t cmd) {
 	this->write8(0, &cmd, 1);
 }
 
-void St7735r::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void St7735r::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
+		uint16_t y1) {
 
 	command(ST7735_CASET);
-	this->write16(1, x0+ 2);
-	this->write16(1, x1+ 2);
+	this->write16(1, x0 + 2);
+	this->write16(1, x1 + 2);
 
 	command(ST7735_RASET);
 	this->write16(1, y0 + 3);
@@ -155,7 +148,7 @@ void St7735r::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) 
 void St7735r::pushColor(uint16_t color, uint16_t length) {
 	_pin_rs.set(Bit_SET);
 	_pin_ss.set(Bit_RESET);
-	while(length --)
+	while (length--)
 		_spi.write16(&color, 1);
 	_pin_ss.set(Bit_SET);
 }
