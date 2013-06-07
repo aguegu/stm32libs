@@ -43,7 +43,6 @@ void Dma::init(uint32_t peripheral_base_addr, uint32_t memory_base_addr,
 	dma_init_type.DMA_M2M = m2m;
 
 	DMA_Init(_dma, &dma_init_type);
-
 }
 
 DMA_Channel_TypeDef * const Dma::base() {

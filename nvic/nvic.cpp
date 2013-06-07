@@ -26,6 +26,5 @@ void Nvic::init(uint8_t irq_channel,
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = irq_channel_sub_priority;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = irq_channel_cmd;
 	NVIC_Init(&NVIC_InitStructure);
-
 }
 

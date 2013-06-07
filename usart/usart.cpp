@@ -8,8 +8,8 @@
 #include "usart.h"
 
 Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState), uint8_t buff_size,
-		uint16_t time_out) :
+		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
+		uint8_t buff_size, uint16_t time_out) :
 		_usart(usart), _buff_size(buff_size), _time_out(time_out) {
 
 	(*rcc_apbx_periph_clock_cmd)(rcc_apbx_periph, ENABLE);
@@ -102,8 +102,7 @@ int Usart::timedRead() {
 
 	while (t) {
 		int c = read();
-		if (c >= 0)
-			return c;
+		if (c >= 0) return c;
 
 		if (millis - start) {
 			t--;
@@ -117,8 +116,7 @@ int Usart::readBytes(uint8_t *buffer, int length) {
 	int index = 0;
 	while (index < length) {
 		int c = timedRead();
-		if (c == -1)
-			break;
+		if (c == -1) break;
 		*buffer++ = (uint8_t) c;
 		index++;
 	}
@@ -134,12 +132,19 @@ int Usart::readBytesUntil(char terminator, char *buffer, int length) {
 	int index = 0;
 	while (index < length) {
 		int c = timedRead();
-		if (c == -1)
-			return -1;
-		if (c == terminator)
-			break;
+		if (c == -1) return -1;
+		if (c == terminator) break;
 		*buffer++ = (char) c;
 		index++;
 	}
 	return index; // return number of characters, not including null terminator
+}
+
+USART_TypeDef * const Usart::base() {
+	return _usart;
+}
+
+void Usart::ithandler() {
+	if (USART_GetITStatus(_usart, USART_IT_TXE )) this->transmit();
+	if (USART_GetITStatus(_usart, USART_IT_RXNE )) this->receive();
 }

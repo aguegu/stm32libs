@@ -39,9 +39,12 @@ public:
 
 	void transmit();
 	void receive();
+	void ithandler();
 
 	int readBytes(uint8_t *buffer, int length);
 	int readBytesUntil(char terminator, char *buffer, int length);
+
+	USART_TypeDef * const base();
 private:
 	USART_TypeDef * const _usart;
 
