@@ -19,7 +19,7 @@ SpiSoft::~SpiSoft() {
 
 void SpiSoft::init() {
 	_mosi.init(GPIO_Mode_Out_PP);
-	_miso.init(GPIO_Mode_IPU);
+	_miso.init(GPIO_Mode_IPD);
 	_sck.init(GPIO_Mode_Out_PP);
 	_ss.init(GPIO_Mode_Out_PP);
 
@@ -43,13 +43,10 @@ uint8_t SpiSoft::transmitByte(uint8_t out) {
 	for (uint8_t i = 0; i < 8; i++) {
 
 		c <<= 1;
-		c |= _miso.getInput() == Bit_SET ? 0x01 : 0x00;
-
+		c |= _miso.getInput() ? 0x01 : 0x00;
 		_mosi.set(out & 0x80 ? Bit_SET : Bit_RESET);
 		_sck.set(Bit_SET);
-		delay(1);
 		_sck.set(Bit_RESET);
-		delay(1);
 		out <<= 1;
 	}
 
