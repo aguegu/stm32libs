@@ -27,14 +27,27 @@ void SpiSoft::init() {
 	_sck.set(Bit_RESET);
 }
 
-void SpiSoft::transmit(uint8_t * out, uint8_t * in, uint8_t length) {
+void SpiSoft::transmit(const uint8_t * out, uint8_t * in, uint32_t length) {
 	_ss.set(Bit_RESET);
 
-	while (length--) {
+	while (length--)
 		*in++ = transmitByte(*out++);
-	}
 
 	_ss.set(Bit_SET);
+}
+
+void SpiSoft::transmit(const uint8_t *out, uint32_t out_length, uint8_t * in,
+		uint32_t in_length = 1, uint8_t dummy_data) {
+	_ss.set(Bit_RESET);
+
+	while (out_length--)
+		transmitByte(*out++);
+
+	while (in_length--)
+		*in++ = transmitByte(dummy_data);
+
+	_ss.set(Bit_SET);
+
 }
 
 uint8_t SpiSoft::transmitByte(uint8_t out) {
@@ -49,6 +62,11 @@ uint8_t SpiSoft::transmitByte(uint8_t out) {
 		_sck.set(Bit_RESET);
 		out <<= 1;
 	}
-
 	return c;
 }
+
+void SpiSoft::transmit(const uint8_t out, uint8_t * in, uint32_t in_length) {
+	this->transmit(&out, 1, in, in_length);
+}
+
+
