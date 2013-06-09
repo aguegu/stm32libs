@@ -112,7 +112,7 @@ int Usart::timedRead() {
 	return -1; // -1 indicates timeout
 }
 
-void Usart::writeBytes(uint8_t *p, uint32_t length) {
+void Usart::write(const uint8_t *p, uint32_t length) {
 	while (length--)
 		this->write(*p++);
 }
