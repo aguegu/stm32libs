@@ -30,7 +30,11 @@ uint8_t Sst25SpiSoft::getStatus() {
 }
 
 void Sst25SpiSoft::write(uint32_t address, uint8_t data) {
-	this->write(address, &data, 1);
+	//this->write(address, &data, 1);
+	uint8_t command[5] = { 0x02, (uint8_t) (address >> 16), (uint8_t) (address
+			>> 8), (uint8_t) address, data };
+	this->transmit(0x06, 0, 0);
+	this->transmit(command, 5, 0, 0);
 }
 
 uint8_t Sst25SpiSoft::read(uint32_t address) {
@@ -70,23 +74,47 @@ uint8_t Sst25SpiSoft::isBusy() {
 
 void Sst25SpiSoft::write(uint32_t address, uint8_t *data, uint32_t length) {
 
-	uint8_t command[4] = { 0x02, (uint8_t) (address >> 16), (uint8_t) (address
+	assert_param((length & 0x01) == 0);
+	assert_param(length >= 2);
+
+	uint8_t command[4] = { 0xad, (uint8_t) (address >> 16), (uint8_t) (address
 			>> 8), (uint8_t) address };
 
 	uint8_t len = 4;
 	uint8_t * p = command;
 
-	//this->transmit(0x06, 0, 0);
+	// Byte-Program:
+	//	while (length--)
+	//		this->write(address++, *data++);
 
-	_ss.set(Bit_RESET);
+	// AAI-Word_Program
+	this->transmit(0x70, 0, 0);
+	this->transmit(0x06, 0, 0);
 
-	while (len--)
-		this->transmitByte(*p++);
+	while (length) {
+		_ss.set(Bit_RESET);
 
-	while (length--)
+		if (len == 255)
+			this->transmitByte(0xad);
+		else
+			while (len--)
+				this->transmitByte(*p++);
+
+		this->transmitByte(*data++);
 		this->transmitByte(*data++);
 
-	_ss.set(Bit_SET);
+		_ss.set(Bit_SET);
+
+		_ss.set(Bit_RESET);
+		while (_miso.getInput() == Bit_RESET)
+			;
+		_ss.set(Bit_SET);
+
+		length -= 2;
+	}
+
+	this->transmit(0x04, 0, 0);
+	this->transmit(0x80, 0, 0);
 }
 
 void Sst25SpiSoft::read(uint32_t address, uint8_t *data, uint32_t length) {

@@ -41,6 +41,7 @@ public:
 	void receive();
 	void ithandler();
 
+	void writeBytes(uint8_t * p, uint32_t length);
 	int readBytes(uint8_t *buffer, int length);
 	int readBytesUntil(char terminator, char *buffer, int length);
 

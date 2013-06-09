@@ -9,6 +9,7 @@
 #define SST25_SPISOFT_H_
 
 #include "spi-soft/spi-soft.h"
+#include "stm32-template.h"
 
 class Sst25SpiSoft: public SpiSoft {
 public:
