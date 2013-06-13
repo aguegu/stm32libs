@@ -44,7 +44,7 @@ uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length) {
 	if (!t) return 0;
 
 	I2C_GenerateSTART(_i2c, ENABLE);
-	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));;
+	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
 	if (!t) return 1;
 
 	I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Transmitter );
