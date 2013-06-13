@@ -23,7 +23,7 @@ public:
 	uint8_t write(uint8_t address, uint8_t *data, uint8_t length,
 			uint8_t send_stop = true);
 
-	void readFrom(uint8_t address, uint8_t *data, uint8_t length,
+	void read(uint8_t address, uint8_t *data, uint8_t length,
 			uint8_t send_stop = true);
 
 	u16 waitAck();

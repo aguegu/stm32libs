@@ -31,9 +31,9 @@ void I2cSoft::start() {
 	_sda.set(Bit_SET);
 
 	_scl.set(Bit_SET);
-//	delayMicroseconds(4);
+	delayMicroseconds(4);
 	_sda.set(Bit_RESET);
-//	delayMicroseconds(4);
+	delayMicroseconds(4);
 
 	_scl.set(Bit_RESET);
 }
@@ -44,9 +44,9 @@ void I2cSoft::stop() {
 
 	_sda.set(Bit_RESET);
 	_scl.set(Bit_SET);
-//	delayMicroseconds(4);
+	delayMicroseconds(8);
 	_sda.set(Bit_SET);
-//	delayMicroseconds(4);
+	delayMicroseconds(8);
 
 }
 
@@ -58,11 +58,11 @@ void I2cSoft::transmit(uint8_t data) {
 
 	for (uint8_t i = 0; i < 8; i++) {
 		_sda.set(data & 0x80 ? Bit_SET : Bit_RESET);
-//		delayMicroseconds(2);
+		delayMicroseconds(4);
 		_scl.set(Bit_SET);
-//		delayMicroseconds(2);
+		delayMicroseconds(4);
 		_scl.set(Bit_RESET);
-//		delayMicroseconds(2);
+		delayMicroseconds(4);
 		data <<= 1;
 	}
 }
@@ -75,12 +75,12 @@ uint8_t I2cSoft::receive() {
 
 	for (u8 i = 0; i < 8; i++) {
 		_scl.set(Bit_RESET);
-//		delayMicroseconds(2);
+		delayMicroseconds(2);
 		_scl.set(Bit_SET);
-//		delayMicroseconds(2);
+		delayMicroseconds(2);
 		data <<= 1;
 		data |= _sda.getInput() ? 0x01 : 0x00;
-//		delayMicroseconds(1);
+		delayMicroseconds(1);
 	}
 
 	return data;
@@ -92,7 +92,9 @@ u16 I2cSoft::waitAck() {
 
 	vu16 t;
 
+	delayMicroseconds(4);
 	_scl.set(Bit_SET);
+	delayMicroseconds(4);
 
 	within(_FLAG_TIMEOUT, _sda.getInput() == Bit_SET);
 
@@ -127,7 +129,7 @@ uint8_t I2cSoft::write(uint8_t address, uint8_t *data, uint8_t length,
 	return t;
 }
 
-void I2cSoft::readFrom(uint8_t address, uint8_t *data, uint8_t length,
+void I2cSoft::read(uint8_t address, uint8_t *data, uint8_t length,
 		uint8_t send_stop) {
 
 	this->start();
@@ -149,8 +151,8 @@ void I2cSoft::sendAck(uint8_t ack) {
 	_sda.init(GPIO_Mode_Out_OD);
 	_sda.set(ack ? Bit_RESET : Bit_SET);
 
-//	delayMicroseconds(2);
+	delayMicroseconds(2);
 	_scl.set(Bit_SET);
-//	delayMicroseconds(2);
+	delayMicroseconds(2);
 	_scl.set(Bit_RESET);
 }
