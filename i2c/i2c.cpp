@@ -83,17 +83,60 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_ADDR ));
 	if (!t) return 2;
 
-	I2C_AcknowledgeConfig(_i2c, DISABLE);
+	if (length == 1) {
+		I2C_AcknowledgeConfig(_i2c, DISABLE);
 
-	__disable_irq();
-	(void) _i2c->SR2;
-	I2C_GenerateSTOP(_i2c, ENABLE);
-	__enable_irq();
+		__disable_irq();
+		(void) _i2c->SR2;
+		I2C_GenerateSTOP(_i2c, ENABLE);
+		__enable_irq();
 
-	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_RXNE ));
-	if (!t) return 3;
+		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_RXNE ));
+		if (!t) return 3;
 
-	*data = I2C_ReceiveData(_i2c);
+		*data = I2C_ReceiveData(_i2c);
+	} else if (length == 2) {
+		I2C_NACKPositionConfig(_i2c, I2C_NACKPosition_Next );
+
+		__disable_irq();
+		(void) _i2c->SR2; // Clear ADDR flag
+		I2C_AcknowledgeConfig(_i2c, DISABLE); // Clear Ack bit
+		__enable_irq();
+
+		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF));
+
+		__disable_irq();
+		I2C_GenerateSTOP(_i2c, ENABLE);
+		*data++ = _i2c->DR;
+		__enable_irq();
+
+		*data++ = _i2c->DR;
+	} else {
+		(void) _i2c->SR2;                           // Clear ADDR flag
+		while (length-- != 3) {
+			// EV7 -- cannot guarantee 1 transfer completion time, wait for BTF
+			//        instead of RXNE
+			within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF));
+			*data++ = I2C_ReceiveData(_i2c);
+		}
+
+		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF));
+
+		// EV7_2 -- Figure 1 has an error, doesn't read N-2 !
+		I2C_AcknowledgeConfig(_i2c, DISABLE); // Clear Ack bit
+
+		__disable_irq();
+		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-2
+		I2C_GenerateSTOP(_i2c, ENABLE);			// program stop
+		__enable_irq();
+
+		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-1
+
+		// wait for byte N
+		within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_RECEIVED ));
+		*data++ = I2C_ReceiveData(_i2c);
+		length = 0;
+	}
 
 	within(_FLAG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ));
 	if (!t) return 4;
