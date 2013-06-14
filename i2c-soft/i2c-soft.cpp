@@ -97,7 +97,6 @@ uint8_t I2cSoft::write(uint8_t address, uint8_t *data, uint8_t length,
 
 void I2cSoft::read(uint8_t address, uint8_t *data, uint8_t length,
 		uint8_t send_stop) {
-
 	this->start();
 	this->transmit((address << 1) | 0x01);
 	this->waitAck();
