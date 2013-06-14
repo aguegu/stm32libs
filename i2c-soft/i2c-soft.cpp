@@ -26,74 +26,48 @@ void I2cSoft::init() {
 }
 
 void I2cSoft::start() {
-
-	_sda.init(GPIO_Mode_Out_OD);
 	_sda.set(Bit_SET);
+	_sda.init(GPIO_Mode_Out_OD);
 
-//	_scl.set(Bit_SET);
-//	delayMicroseconds(4);
 	_sda.set(Bit_RESET);
-//	delayMicroseconds(4);
 	_scl.set(Bit_RESET);
 }
 
 void I2cSoft::stop() {
-
+	_sda.set(Bit_RESET);
 	_sda.init(GPIO_Mode_Out_OD);
 
-	_sda.set(Bit_RESET);
 	_scl.set(Bit_SET);
-//	delayMicroseconds(8);
 	_sda.set(Bit_SET);
-//	delayMicroseconds(8);
-
 }
 
 void I2cSoft::transmit(uint8_t data) {
 
 	_sda.init(GPIO_Mode_Out_OD);
 
-//	_scl.set(Bit_RESET);
-
 	for (uint8_t i = 0; i < 8; i++) {
 		_sda.set(data & 0x80 ? Bit_SET : Bit_RESET);
-//		delayMicroseconds(4);
 		_scl.set(Bit_SET);
-//		delayMicroseconds(4);
 		_scl.set(Bit_RESET);
-//		delayMicroseconds(4);
 		data <<= 1;
 	}
 }
 
 uint8_t I2cSoft::receive() {
-
-	uint8_t data = 0;
-
 	_sda.init(GPIO_Mode_IN_FLOATING);
-
+	uint8_t data = 0;
 	for (u8 i = 0; i < 8; i++) {
-
-//		delayMicroseconds(2);
 		_scl.set(Bit_SET);
-//		delayMicroseconds(2);
 		data <<= 1;
 		data |= _sda.getInput() ? 0x01 : 0x00;
-//		delayMicroseconds(1);
-
 		_scl.set(Bit_RESET);
 	}
-
 	return data;
 }
 
 u16 I2cSoft::waitAck() {
-
 	_sda.init(GPIO_Mode_IN_FLOATING);
-
-//	delayMicroseconds(4);
 	_scl.set(Bit_SET);
-//	delayMicroseconds(4);
 
 	vu16 t;
 	within(_FLAG_TIMEOUT, _sda.getInput() == Bit_SET);
@@ -105,20 +79,17 @@ u16 I2cSoft::waitAck() {
 uint8_t I2cSoft::write(uint8_t address, uint8_t *data, uint8_t length,
 		uint8_t send_stop) {
 	vu16 t;
-
 	within(_LONG_TIMEOUT, _sda.getInput() == Bit_RESET);
 	if (!t) return 1;
 
 	this->start();
 	this->transmit(address << 1);
 
-	if (this->waitAck() == 0)
-		return 2;
+	if (this->waitAck() == 0) return 2;
 
 	while (length--) {
 		this->transmit(*data++);
-		if (this->waitAck() == 0)
-				return 3;
+		if (this->waitAck() == 0) return 3;
 	}
 
 	if (send_stop) this->stop();
@@ -142,14 +113,11 @@ void I2cSoft::read(uint8_t address, uint8_t *data, uint8_t length,
 }
 
 void I2cSoft::sendAck(uint8_t ack) {
-
 	_scl.set(Bit_RESET);
 
-	_sda.init(GPIO_Mode_Out_OD);
 	_sda.set(ack ? Bit_RESET : Bit_SET);
+	_sda.init(GPIO_Mode_Out_OD);
 
-//	delayMicroseconds(2);
 	_scl.set(Bit_SET);
-//	delayMicroseconds(2);
 	_scl.set(Bit_RESET);
 }
