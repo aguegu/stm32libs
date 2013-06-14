@@ -9,10 +9,8 @@
 
 #define within(time, fun) for (t = (time); (fun) && --t;)
 
-I2cSoft::I2cSoft(Gpio &sda, Gpio &scl, uint16_t flat_timeout,
-		uint16_t long_timeout) :
-		_sda(sda), _scl(scl), _FLAG_TIMEOUT(flat_timeout), _LONG_TIMEOUT(
-				long_timeout) {
+I2cSoft::I2cSoft(Gpio &sda, Gpio &scl, uint16_t flat_timeout) :
+		_sda(sda), _scl(scl), _FLAG_TIMEOUT(flat_timeout) {
 
 }
 
@@ -79,7 +77,7 @@ u16 I2cSoft::waitAck() {
 uint8_t I2cSoft::write(uint8_t address, uint8_t *data, uint8_t length,
 		uint8_t send_stop) {
 	vu16 t;
-	within(_LONG_TIMEOUT, _sda.getInput() == Bit_RESET);
+	within(_FLAG_TIMEOUT, _sda.getInput() == Bit_RESET);
 	if (!t) return 1;
 
 	this->start();

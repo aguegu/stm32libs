@@ -9,11 +9,10 @@
 #define I2C_SOFT_H_
 
 #include "gpio/gpio.h"
-#include "stm32-template.h"
 
 class I2cSoft {
 public:
-	I2cSoft(Gpio &sda, Gpio &scl, uint16_t flat_timeout = 0x100, uint16_t long_timeout = 0x200);
+	I2cSoft(Gpio &sda, Gpio &scl, uint16_t flat_timeout = 0x100);
 	~I2cSoft();
 	void init();
 
@@ -36,7 +35,6 @@ private:
 	Gpio & _scl;
 
 	const uint16_t _FLAG_TIMEOUT;
-	const uint16_t _LONG_TIMEOUT;
 };
 
 #endif /* I2C_SOFT_H_ */
