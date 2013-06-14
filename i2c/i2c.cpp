@@ -47,7 +47,7 @@ uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length) {
 	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
 	if (!t) return 1;
 
-	I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Transmitter );
+	I2C_Send7bitAddress(_i2c, slave_address << 1, I2C_Direction_Transmitter );
 	within(_FLAG_TIMEOUT,
 			!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED ));
 	if (!t) return 2;
@@ -79,7 +79,7 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
 	if (!t) return 1;
 
-	I2C_Send7bitAddress(_i2c, slave_address, I2C_Direction_Receiver );
+	I2C_Send7bitAddress(_i2c, slave_address << 1, I2C_Direction_Receiver );
 	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_ADDR ));
 	if (!t) return 2;
 
@@ -133,7 +133,8 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-1
 
 		// wait for byte N
-		within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_RECEIVED ));
+		within(_FLAG_TIMEOUT,
+				!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_RECEIVED ));
 		*data++ = I2C_ReceiveData(_i2c);
 		length = 0;
 	}
