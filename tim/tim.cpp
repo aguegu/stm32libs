@@ -62,3 +62,22 @@ void TimOc::apply(TIM_TypeDef * tim,
 		void (*p)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)) {
 	(*p)(tim, &_tim_oc_init_type);
 }
+
+//////////////////////////////////////////////////////////////
+
+TimIc::TimIc() {
+
+}
+
+TimIc::~TimIc() {
+
+}
+
+void TimIc::init(uint16_t channel, uint16_t ic_polarity, uint16_t ic_selection,
+		uint16_t ic_prescaler, uint16_t ic_filter) {
+	_tim_ic_init_type.TIM_Channel = channel;
+	_tim_ic_init_type.TIM_ICPolarity = ic_polarity;
+	_tim_ic_init_type.TIM_ICSelection = ic_selection;
+	_tim_ic_init_type.TIM_ICPrescaler = ic_prescaler;
+	_tim_ic_init_type.TIM_ICFilter = ic_filter;
+}
