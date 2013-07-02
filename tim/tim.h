@@ -40,7 +40,7 @@ public:
 			void (*p)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct));
 
 private:
-	TIM_OCInitTypeDef tim_oc_init_type;
+	TIM_OCInitTypeDef _tim_oc_init_type;
 };
 
 #endif /* TIM_H_ */
