@@ -25,7 +25,10 @@ private:
 
 class TimOc {
 public:
-	TimOc();
+	TimOc(TIM_TypeDef * tim,
+			void (*tim_ocx_init)(TIM_TypeDef* TIMx,
+					TIM_OCInitTypeDef* TIM_OCInitStruct),
+			void (*tim_set_comparex)(TIM_TypeDef* TIMx, uint16_t compare));
 	~TimOc();
 
 	void init(uint16_t oc_mode = TIM_OCMode_Timing, uint16_t output_state =
@@ -36,11 +39,14 @@ public:
 	TIM_OCIdleState_Reset, uint16_t oc_nidle_state =
 	TIM_OCNIdleState_Reset);
 
-	void apply(TIM_TypeDef * tim,
-			void (*p)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct));
+	void setCompare(uint16_t pulse);
 
 private:
 	TIM_OCInitTypeDef _tim_oc_init_type;
+	TIM_TypeDef * const _tim;
+	void (*_tim_ocx_init)(TIM_TypeDef* TIMx,
+			TIM_OCInitTypeDef* TIM_OCInitStruct);
+	void (*_tim_set_comparex)(TIM_TypeDef* TIMx, uint16_t compare);
 };
 
 class TimIc {
@@ -48,8 +54,8 @@ public:
 	TimIc();
 	~TimIc();
 	void init(uint16_t channel = TIM_Channel_1, uint16_t ic_polarity =
-			TIM_ICPolarity_Rising, uint16_t ic_selection =
-			TIM_ICSelection_DirectTI, uint16_t ic_prescaler = TIM_ICPSC_DIV1,
+	TIM_ICPolarity_Rising, uint16_t ic_selection =
+	TIM_ICSelection_DirectTI, uint16_t ic_prescaler = TIM_ICPSC_DIV1,
 			uint16_t ic_filter = 0x00);
 	void apply();
 private:

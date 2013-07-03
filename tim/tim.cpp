@@ -32,12 +32,17 @@ void Tim::init(uint32_t real_clock, uint16_t real_period, uint16_t counter_mode,
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = repition_counter;
 
 	TIM_TimeBaseInit(_tim, &TIM_TimeBaseStructure);
+	TIM_Cmd(_tim, ENABLE);
 }
 
 //////////////////////////////////////////////////////////
 
-TimOc::TimOc() {
-	this->init();
+TimOc::TimOc(TIM_TypeDef * tim,
+		void (*tim_ocx_init)(TIM_TypeDef* TIMx,
+				TIM_OCInitTypeDef* TIM_OCInitStruct),
+		void (*tim_set_comparex)(TIM_TypeDef* TIMx, uint16_t compare)) :
+		_tim(tim), _tim_ocx_init(tim_ocx_init), _tim_set_comparex(
+				tim_set_comparex) {
 }
 
 TimOc::~TimOc() {
@@ -48,6 +53,7 @@ void TimOc::init(uint16_t oc_mode, uint16_t output_state,
 		uint16_t output_nstate, uint16_t pulse, uint16_t oc_polarity,
 		uint16_t oc_npolarity, uint16_t oc_idle_state,
 		uint16_t oc_nidle_state) {
+
 	_tim_oc_init_type.TIM_OCMode = oc_mode;
 	_tim_oc_init_type.TIM_OutputState = output_state;
 	_tim_oc_init_type.TIM_OutputNState = output_nstate;
@@ -56,11 +62,12 @@ void TimOc::init(uint16_t oc_mode, uint16_t output_state,
 	_tim_oc_init_type.TIM_OCNPolarity = oc_npolarity;
 	_tim_oc_init_type.TIM_OCIdleState = oc_idle_state;
 	_tim_oc_init_type.TIM_OCNIdleState = oc_nidle_state;
+
+	(*_tim_ocx_init)(_tim, &_tim_oc_init_type);
 }
 
-void TimOc::apply(TIM_TypeDef * tim,
-		void (*p)(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct)) {
-	(*p)(tim, &_tim_oc_init_type);
+void TimOc::setCompare(uint16_t pulse) {
+	(*_tim_set_comparex)(_tim, pulse);
 }
 
 //////////////////////////////////////////////////////////////
