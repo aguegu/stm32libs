@@ -21,6 +21,7 @@ public:
 		uint16_t counter_mode = TIM_CounterMode_Up,
 		uint16_t clock_division = TIM_CKD_DIV1,
 		uint8_t repition_counter = 0x0000);
+	void setCounter(uint16_t counter);
 private:
 	TIM_TypeDef * const _tim;
 };
