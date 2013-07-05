@@ -7,9 +7,10 @@
 
 #include "adc.h"
 
-Adc::Adc(ADC_TypeDef *adc, uint32_t rcc_apb2periph_adcx) :
+Adc::Adc(ADC_TypeDef *adc, uint32_t rcc_apb2periph_adcx, uint32_t rcc_pclk2_div) :
 		_adc(adc) {
 	RCC_APB2PeriphClockCmd(rcc_apb2periph_adcx, ENABLE);
+	RCC_ADCCLKConfig(rcc_pclk2_div);
 }
 
 Adc::~Adc() {

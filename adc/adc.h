@@ -12,7 +12,7 @@
 
 class Adc {
 public:
-	Adc(ADC_TypeDef *adc, uint32_t rcc_apb2periph_adcx);
+	Adc(ADC_TypeDef *adc, uint32_t rcc_apb2periph_adcx, uint32_t rcc_pclk2_div = RCC_PCLK2_Div2);
 	~Adc();
 
 	void init(uint32_t mode = ADC_Mode_Independent,
