@@ -109,9 +109,9 @@ void St7735r::init() {
 		if (cmd->delay) delay(cmd->delay);
 	}
 
-	_dma.setPeriph((uint32_t) &(_spi.base()->DR),
+	_dma.setPeriphToConf((uint32_t) &(_spi.base()->DR),
 			DMA_PeripheralDataSize_HalfWord, DMA_PeripheralInc_Disable );
-	_dma.setFunction();
+	_dma.setFunctionToConf();
 }
 
 void St7735r::write8(uint8_t is_data, const uint8_t * data, uint16_t length) {
@@ -129,9 +129,9 @@ void St7735r::write16(uint8_t is_data, const uint16_t * data, uint16_t length) {
 	_pin_ss.set(Bit_RESET);
 //	_spi.write16(data, length);
 
-	_dma.setMemory((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
+	_dma.setMemoryToConf((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
 			DMA_MemoryInc_Enable );
-	_dma.setTransfer(length, DMA_DIR_PeripheralDST);
+	_dma.setTransferToConf(length, DMA_DIR_PeripheralDST);
 	_dma.run();
 
 	_pin_ss.set(Bit_SET);
@@ -146,9 +146,9 @@ void St7735r::write16(uint8_t is_data, const uint16_t data, uint16_t length) {
 //	while (length--)
 //		_spi.write16(&data, 1);
 
-	_dma.setMemory((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
+	_dma.setMemoryToConf((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
 			DMA_MemoryInc_Disable );
-	_dma.setTransfer(length, DMA_DIR_PeripheralDST);
+	_dma.setTransferToConf(length, DMA_DIR_PeripheralDST);
 	_dma.run();
 
 	_pin_ss.set(Bit_SET);
