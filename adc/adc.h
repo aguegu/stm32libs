@@ -26,6 +26,9 @@ public:
 	void calibrate();
 	void startSoftwareConvert(FunctionalState state = ENABLE);
 	uint16_t getValue();
+	void setDma(FunctionalState enable = ENABLE);
+	uint32_t getAddress();
+
 private:
 	ADC_TypeDef* const _adc;
 };

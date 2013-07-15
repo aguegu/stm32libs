@@ -57,3 +57,11 @@ uint16_t Adc::getValue() {
 		;
 	return ADC_GetConversionValue(ADC1);
 }
+
+void Adc::setDma(FunctionalState enable) {
+	ADC_DMACmd(_adc, enable);
+}
+
+uint32_t Adc::getAddress() {
+	return (uint32_t) (&(_adc->DR));
+}

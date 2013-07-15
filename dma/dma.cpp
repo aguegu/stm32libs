@@ -16,13 +16,20 @@ Dma::~Dma() {
 
 }
 
-void Dma::init(uint32_t peripheral_base_addr, uint32_t memory_base_addr,
-		uint32_t direction, uint32_t buffer_size, uint32_t peripheral_increment,
-		uint32_t memory_increment, uint32_t peripheral_data_size,
-		uint32_t memory_data_size, uint32_t mode, uint32_t priority,
-		uint32_t m2m) {
+void Dma::init(uint32_t peripheral_base_addr,
+	uint32_t memory_base_addr,
+	uint32_t direction,
+	uint32_t buffer_size,
+	uint32_t peripheral_increment,
+	uint32_t memory_increment,
+	uint32_t peripheral_data_size,
+	uint32_t memory_data_size,
+	uint32_t mode,
+	uint32_t priority,
+	uint32_t m2m) {
 
-	this->setPeriph(peripheral_base_addr, peripheral_data_size,
+	this->setPeriph(peripheral_base_addr,
+			peripheral_data_size,
 			peripheral_increment);
 //	_dma_init_type.DMA_PeripheralBaseAddr = peripheral_base_addr;
 //	_dma_init_type.DMA_PeripheralDataSize = peripheral_data_size;
@@ -41,6 +48,9 @@ void Dma::init(uint32_t peripheral_base_addr, uint32_t memory_base_addr,
 //	_dma_init_type.DMA_Mode = mode;
 //	_dma_init_type.DMA_Priority = priority;
 //	_dma_init_type.DMA_M2M = m2m;
+
+	DMA_DeInit(_dma);
+	DMA_Init(_dma, &_dma_init_type);
 }
 
 DMA_Channel_TypeDef * const Dma::base() {
@@ -48,23 +58,27 @@ DMA_Channel_TypeDef * const Dma::base() {
 }
 
 void Dma::run() {
-	DMA_DeInit(_dma);
-	DMA_Init(_dma, &_dma_init_type);
 	DMA_Cmd(_dma, ENABLE);
 	while (!DMA_GetFlagStatus(_flag))
 		;
 	DMA_Cmd(_dma, DISABLE);
 }
 
-void Dma::setPeriph(uint32_t base_addr, uint32_t data_size,
-		uint32_t increment) {
+void Dma::setEnable(FunctionalState enable) {
+	DMA_Cmd(_dma, enable);
+}
+
+void Dma::setPeriph(uint32_t base_addr,
+	uint32_t data_size,
+	uint32_t increment) {
 	_dma_init_type.DMA_PeripheralBaseAddr = base_addr;
 	_dma_init_type.DMA_PeripheralDataSize = data_size;
 	_dma_init_type.DMA_PeripheralInc = increment;
 }
 
-void Dma::setMemory(uint32_t base_addr, uint32_t data_size,
-		uint32_t increment) {
+void Dma::setMemory(uint32_t base_addr,
+	uint32_t data_size,
+	uint32_t increment) {
 	_dma_init_type.DMA_MemoryBaseAddr = base_addr;
 	_dma_init_type.DMA_MemoryDataSize = data_size;
 	_dma_init_type.DMA_MemoryInc = increment;
