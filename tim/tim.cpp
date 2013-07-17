@@ -46,8 +46,13 @@ void Tim::setCounter(uint16_t counter) {
 void Tim::configureIT(uint16_t it, FunctionalState enable) {
 	TIM_ITConfig(_tim, it, enable);
 }
+
 void Tim::setState(FunctionalState enable) {
 	TIM_Cmd(_tim, enable);
+}
+
+void Tim::configureArrPreload(FunctionalState enable) {
+	TIM_ARRPreloadConfig(_tim, enable);
 }
 
 //////////////////////////////////////////////////////////

@@ -24,7 +24,9 @@ public:
 	void setCounter(uint16_t counter);
 	void configureIT(uint16_t it, FunctionalState enable = ENABLE);
 	void setState(FunctionalState enable = ENABLE);
-	private:
+	void configureArrPreload(FunctionalState enable = ENABLE);
+
+private:
 	TIM_TypeDef * const _tim;
 };
 
@@ -63,7 +65,8 @@ public:
 		uint16_t ic_selection = TIM_ICSelection_DirectTI,
 		uint16_t ic_prescaler = TIM_ICPSC_DIV1,
 		uint16_t ic_filter = 0x00);
-	private:
+
+private:
 	TIM_TypeDef * const _tim;
 };
 
