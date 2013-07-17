@@ -25,7 +25,8 @@ public:
 	void configureIT(uint16_t it, FunctionalState enable = ENABLE);
 	void setState(FunctionalState enable = ENABLE);
 	void configureArrPreload(FunctionalState enable = ENABLE);
-
+	ITStatus getITStatus(uint16_t it);
+	void clearITPendingBit(uint16_t it);
 private:
 	TIM_TypeDef * const _tim;
 };

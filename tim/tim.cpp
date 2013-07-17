@@ -55,6 +55,16 @@ void Tim::configureArrPreload(FunctionalState enable) {
 	TIM_ARRPreloadConfig(_tim, enable);
 }
 
+ITStatus Tim::getITStatus(uint16_t it) {
+	return TIM_GetITStatus(_tim, it);
+}
+
+void Tim::clearITPendingBit(uint16_t it) {
+	TIM_ClearITPendingBit(_tim, it);
+}
+
+
+
 //////////////////////////////////////////////////////////
 
 TimOc::TimOc(TIM_TypeDef * tim,
