@@ -43,13 +43,21 @@ void Tim::setCounter(uint16_t counter) {
 	TIM_SetCounter(_tim, counter);
 }
 
+void Tim::configureIT(uint16_t it, FunctionalState enable) {
+	TIM_ITConfig(_tim, it, enable);
+}
+void Tim::setState(FunctionalState enable) {
+	TIM_Cmd(_tim, enable);
+}
+
 //////////////////////////////////////////////////////////
 
 TimOc::TimOc(TIM_TypeDef * tim,
 	void (*tim_ocx_init)(TIM_TypeDef* TIMx,
 		TIM_OCInitTypeDef* TIM_OCInitStruct),
 	void (*tim_set_comparex)(TIM_TypeDef* TIMx, uint16_t compare)) :
-		_tim(tim), _tim_ocx_init(tim_ocx_init), _tim_set_comparex(tim_set_comparex) {
+		_tim(tim), _tim_ocx_init(tim_ocx_init), _tim_set_comparex(
+			tim_set_comparex) {
 }
 
 TimOc::~TimOc() {

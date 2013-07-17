@@ -22,7 +22,9 @@ public:
 		uint16_t clock_division = TIM_CKD_DIV1,
 		uint8_t repition_counter = 0x0000);
 	void setCounter(uint16_t counter);
-private:
+	void configureIT(uint16_t it, FunctionalState enable = ENABLE);
+	void setState(FunctionalState enable = ENABLE);
+	private:
 	TIM_TypeDef * const _tim;
 };
 
@@ -61,7 +63,7 @@ public:
 		uint16_t ic_selection = TIM_ICSelection_DirectTI,
 		uint16_t ic_prescaler = TIM_ICPSC_DIV1,
 		uint16_t ic_filter = 0x00);
-private:
+	private:
 	TIM_TypeDef * const _tim;
 };
 
