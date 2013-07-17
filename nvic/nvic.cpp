@@ -7,24 +7,22 @@
 
 #include "nvic.h"
 
-Nvic::Nvic() {
-
+void Nvic::configureGroup(uint32_t priority_group) {
+	NVIC_PriorityGroupConfig(priority_group );
 }
 
-Nvic::~Nvic() {
-
-}
-
-void Nvic::init(uint8_t irq_channel,
-		uint8_t irq_channel_preemption_priority,
-		uint8_t irq_channel_sub_priority,
-		FunctionalState irq_channel_cmd) {
+void Nvic::configure(uint8_t irq_channel,
+	uint8_t preemption_priority,
+	uint8_t sub_priority,
+	FunctionalState cmd) {
 
 	NVIC_InitTypeDef NVIC_InitStructure;
 	NVIC_InitStructure.NVIC_IRQChannel = irq_channel;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = irq_channel_preemption_priority;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = irq_channel_sub_priority;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = irq_channel_cmd;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority =
+			preemption_priority;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = sub_priority;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = cmd;
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+Nvic nvic;

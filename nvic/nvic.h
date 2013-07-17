@@ -12,12 +12,15 @@
 
 class Nvic {
 public:
-	Nvic();
-	~Nvic();
-	void init(uint8_t NVIC_IRQChannel,
-			uint8_t NVIC_IRQChannelPreemptionPriority,
-			uint8_t NVIC_IRQChannelSubPriority,
-			FunctionalState NVIC_IRQChannelCmd);
+
+	static void configureGroup(uint32_t priority_group = NVIC_PriorityGroup_0);
+
+	static void configure(uint8_t irq_channel,
+		uint8_t preemption_priority,
+		uint8_t sub_priority,
+		FunctionalState cmd);
 };
+
+extern Nvic nvic;
 
 #endif /* NVIC_H_ */
