@@ -49,6 +49,11 @@ uint8_t Usart::available(void) {
 			% _buff_size;
 }
 
+uint8_t Usart::cached(void) {
+	return (_buff_size + _tx_buff.index_write - _tx_buff.index_read)
+			% _buff_size;
+}
+
 int Usart::read(void) {
 	if (_rx_buff.index_write != _rx_buff.index_read) {
 		uint16_t c = _rx_buff.buffer[_rx_buff.index_read];
