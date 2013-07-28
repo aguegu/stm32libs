@@ -38,9 +38,8 @@ public:
 	uint8_t available(void);
 	uint8_t cached(void);
 
-	void flush();
-
-	virtual void write(uint16_t c);
+	virtual void flush();
+	void write(uint16_t c);
 	int read(void);
 
 	int timedRead();
@@ -54,6 +53,9 @@ public:
 
 	USART_TypeDef * const base();
 
+	virtual void onTXE();
+	void onRXNE();
+
 private:
 	USART_TypeDef * const _usart;
 
@@ -61,9 +63,6 @@ private:
 	ring_buff _rx_buff;
 	const uint8_t _buff_size;
 	const uint16_t _time_out;
-
-	inline void receive();
-	inline void transmit();
 };
 
 #endif /* USART_H_ */

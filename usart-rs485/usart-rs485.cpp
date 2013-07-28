@@ -26,14 +26,21 @@ void UsartRs485::init(uint32_t baudrate, uint16_t word_length,
 	this->Usart::init(baudrate, word_length, stop_bits, parity, mode,
 			hardware_flow_control);
 
-	_de.init(GPIO_Mode_Out_OD, GPIO_Speed_50MHz);
-	_re.init(GPIO_Mode_Out_OD, GPIO_Speed_50MHz);
+	_de.init(GPIO_Mode_Out_OD);
+	_re.init(GPIO_Mode_Out_OD);
 
 	_de.set(Bit_RESET);
 	_re.set(Bit_RESET);
 }
 
-void UsartRs485::setMode(BitAction mode) {
-	_re.set(mode);
-	_de.set(mode);
+void UsartRs485::flush() {
+	this->Usart::flush();
+	_re.set(Bit_RESET);
+	_de.set(Bit_RESET);
+}
+
+void UsartRs485::onTXE() {
+	_re.set(Bit_SET);
+	_de.set(Bit_SET);
+	this->Usart::onTXE();
 }

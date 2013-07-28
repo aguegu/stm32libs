@@ -82,7 +82,7 @@ void Usart::write(uint16_t c) {
 	USART_ITConfig(_usart, USART_IT_TXE, ENABLE);
 }
 
-void Usart::transmit() {
+void Usart::onTXE() {
 
 	USART_SendData(_usart, _tx_buff.buffer[_tx_buff.index_read]);
 	_tx_buff.index_read = (_tx_buff.index_read + 1) % _buff_size;
@@ -91,7 +91,7 @@ void Usart::transmit() {
 		USART_ITConfig(_usart, USART_IT_TXE, DISABLE);
 }
 
-void Usart::receive() {
+void Usart::onRXNE() {
 	uint8_t i = (_rx_buff.index_write + 1) % _buff_size;
 
 	// when buffer is full, next income would be ignored
@@ -156,6 +156,6 @@ USART_TypeDef * const Usart::base() {
 }
 
 void Usart::ithandler() {
-	if (USART_GetITStatus(_usart, USART_IT_TXE)) this->transmit();
-	if (USART_GetITStatus(_usart, USART_IT_RXNE)) this->receive();
+	if (USART_GetITStatus(_usart, USART_IT_TXE)) this->onTXE();
+	if (USART_GetITStatus(_usart, USART_IT_RXNE)) this->onRXNE();
 }

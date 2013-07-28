@@ -30,11 +30,13 @@ public:
 		uint16_t mode = USART_Mode_Rx | USART_Mode_Tx,
 		uint16_t hardware_flow_control = USART_HardwareFlowControl_None);
 
-	void setMode(BitAction mode);
+	void flush();
 
 private:
 	Gpio & _de;
 	Gpio & _re;
+
+	void onTXE();
 };
 
 #endif /* USART_H_ */
