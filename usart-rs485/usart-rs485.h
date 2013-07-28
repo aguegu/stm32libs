@@ -30,10 +30,7 @@ public:
 		uint16_t mode = USART_Mode_Rx | USART_Mode_Tx,
 		uint16_t hardware_flow_control = USART_HardwareFlowControl_None);
 
-	void write(uint16_t c);
-
-protected:
-	void transmit();
+	void setMode(BitAction mode);
 
 private:
 	Gpio & _de;

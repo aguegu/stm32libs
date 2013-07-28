@@ -66,10 +66,13 @@ int Usart::read(void) {
 void Usart::flush() {
 	while (_tx_buff.index_write != _tx_buff.index_read)
 		;
+
+	while (USART_GetFlagStatus(_usart, USART_FLAG_TC) == RESET)
+		;
 }
 
 void Usart::write(uint16_t c) {
-	uint8_t i = (_tx_buff.index_write + 1) % _buff_size;
+	volatile uint8_t i = (_tx_buff.index_write + 1) % _buff_size;
 	while (i == _tx_buff.index_read)
 		;
 
@@ -80,14 +83,12 @@ void Usart::write(uint16_t c) {
 }
 
 void Usart::transmit() {
-	if (_tx_buff.index_read == _tx_buff.index_write) {
-		USART_ITConfig(_usart, USART_IT_TXE, DISABLE);
-	} else {
-		uint16_t c = _tx_buff.buffer[_tx_buff.index_read];
-		_tx_buff.index_read = (_tx_buff.index_read + 1) % _buff_size;
 
-		USART_SendData(_usart, c);
-	}
+	USART_SendData(_usart, _tx_buff.buffer[_tx_buff.index_read]);
+	_tx_buff.index_read = (_tx_buff.index_read + 1) % _buff_size;
+
+	if (_tx_buff.index_read == _tx_buff.index_write)
+		USART_ITConfig(_usart, USART_IT_TXE, DISABLE);
 }
 
 void Usart::receive() {
@@ -155,6 +156,6 @@ USART_TypeDef * const Usart::base() {
 }
 
 void Usart::ithandler() {
-	if (USART_GetITStatus(_usart, USART_IT_TXE )) this->transmit();
-	if (USART_GetITStatus(_usart, USART_IT_RXNE )) this->receive();
+	if (USART_GetITStatus(_usart, USART_IT_TXE)) this->transmit();
+	if (USART_GetITStatus(_usart, USART_IT_RXNE)) this->receive();
 }

@@ -54,10 +54,6 @@ public:
 
 	USART_TypeDef * const base();
 
-protected:
-
-	virtual void transmit();
-
 private:
 	USART_TypeDef * const _usart;
 
@@ -66,7 +62,8 @@ private:
 	const uint8_t _buff_size;
 	const uint16_t _time_out;
 
-	void receive();
+	inline void receive();
+	inline void transmit();
 };
 
 #endif /* USART_H_ */
