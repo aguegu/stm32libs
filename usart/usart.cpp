@@ -8,8 +8,8 @@
 #include "usart.h"
 
 Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
-		uint8_t buff_size, uint16_t time_out) :
+	void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
+	uint8_t buff_size, uint16_t time_out) :
 		_usart(usart), _buff_size(buff_size), _time_out(time_out) {
 
 	(*rcc_apbx_periph_clock_cmd)(rcc_apbx_periph, ENABLE);
@@ -29,7 +29,7 @@ Usart::~Usart() {
 }
 
 void Usart::init(uint32_t baudrate, uint16_t word_length, uint16_t stop_bits,
-		uint16_t parity, uint16_t mode, uint16_t hardware_flow_control) {
+	uint16_t parity, uint16_t mode, uint16_t hardware_flow_control) {
 	USART_InitTypeDef usart_init_type;
 	usart_init_type.USART_BaudRate = baudrate;
 	usart_init_type.USART_WordLength = word_length;
@@ -96,8 +96,16 @@ void Usart::onRXNE() {
 
 	// when buffer is full, next income would be ignored
 	if (i != _rx_buff.index_read) {
-		_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart);
-		_rx_buff.index_write = i;
+
+		if (USART_GetFlagStatus(_usart, USART_FLAG_PE) ||
+				USART_GetFlagStatus(_usart, USART_FLAG_ORE) ||
+				USART_GetFlagStatus(_usart, USART_FLAG_FE) ||
+				USART_GetFlagStatus(_usart, USART_FLAG_NE))  {
+			USART_ReceiveData(_usart);
+		} else {
+			_rx_buff.buffer[_rx_buff.index_write] = USART_ReceiveData(_usart);
+			_rx_buff.index_write = i;
+		}
 	}
 }
 
