@@ -45,12 +45,9 @@ void Hd44780Basic::setCache(uint8_t index, uint8_t value) {
 }
 
 void Hd44780Basic::putString(uint8_t address, char *p, uint8_t length) const {
-	char *pp = p;
-
 	this->setCursor(address);
-
 	while (length--)
-		transmit(true, *pp++);
+		transmit(true, *p++);
 }
 
 void Hd44780Basic::putChar(uint8_t address, char c) const {
@@ -66,10 +63,8 @@ void Hd44780Basic::init() {
 
 void Hd44780Basic::putCache() const {
 	for (uint8_t r = 0; r < _row_count; r++)
-		this->putString(
-						*((_col_count <= 16 ?
-								ROW_INDEX_16 : ROW_INDEX_20)
-								+ r), _cache + _col_count * r, _col_count);
+		this->putString(*((_col_count <= 16 ? ROW_INDEX_16 : ROW_INDEX_20) + r),
+				_cache + _col_count * r, _col_count);
 }
 
 void Hd44780Basic::printf(uint8_t index, const char *__fmt, ...) {
@@ -89,20 +84,20 @@ void Hd44780Basic::printf(const char *__fmt, ...) {
 	va_end(ap);
 }
 
-void Hd44780Basic::clear() const // 0x01
-{
+// 0x01
+void Hd44780Basic::clear() const {
 	transmit(false, 0x01);
 	delayMicroseconds(2000);
 }
 
-void Hd44780Basic::rst() const // 0x02
-{
+// 0x02
+void Hd44780Basic::rst() const {
 	transmit(false, 0x02);
 	delayMicroseconds(2000);
 }
 
-void Hd44780Basic::configureInput(bool ac, bool screen_move) const // 0x04
-		{
+// 0x04
+void Hd44780Basic::configureInput(bool ac, bool screen_move) const {
 	uint8_t cmd = 0x04;
 
 	if (ac)
@@ -113,9 +108,9 @@ void Hd44780Basic::configureInput(bool ac, bool screen_move) const // 0x04
 	transmit(false, cmd);
 }
 
+// 0x08
 void Hd44780Basic::configureDisplay(bool display_on, bool cursor,
-		bool blink) const // 0x08
-		{
+		bool blink) const {
 	uint8_t cmd = 0x08;
 	if (display_on)
 		cmd |= 0x04;
@@ -127,25 +122,25 @@ void Hd44780Basic::configureDisplay(bool display_on, bool cursor,
 	transmit(false, cmd);
 }
 
-void Hd44780Basic::moveCursor(bool right) const // 0x10
-		{
+// 0x10
+void Hd44780Basic::moveCursor(bool right) const {
 	uint8_t cmd = 0x10;
 	if (right)
 		cmd |= 0x04;
 	transmit(false, cmd);
 }
 
-void Hd44780Basic::moveScreen(bool right) const // 0x11
-		{
+// 0x11
+void Hd44780Basic::moveScreen(bool right) const {
 	uint8_t cmd = 0x11;
 	if (right)
 		cmd |= 0x04;
 	transmit(false, cmd);
 }
 
+// 0x20
 void Hd44780Basic::configureFunction(bool interface8, bool doubleline,
-		bool font5x10) const // 0x20
-		{
+		bool font5x10) const {
 	uint8_t cmd = 0x20;
 	if (interface8)
 		cmd |= 0x10;
@@ -156,13 +151,12 @@ void Hd44780Basic::configureFunction(bool interface8, bool doubleline,
 	transmit(false, cmd);
 }
 
-void Hd44780Basic::setCGRam(uint8_t const *pFont, uint8_t length) const {
+void Hd44780Basic::setCGRam(uint8_t const *p, uint8_t length) const {
 	this->configureInput(true, false);
 	transmit(false, 0x40);
 
-	for (uint8_t i = 0; i < length; i++) {
-		transmit(true, pFont[i]);
-	}
+	while (length--)
+		transmit(true, *p++);
 }
 
 void Hd44780Basic::setCursor(uint8_t address) const {

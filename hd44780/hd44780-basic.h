@@ -52,7 +52,6 @@ protected:
 	static const uint8_t ROW_INDEX_20[];
 
 	virtual void initHardware() const = 0;
-
 	virtual void transmit(bool isData, uint8_t val) const = 0;
 
 	void configureInput(bool ac = true, bool screen_move = false) const;
