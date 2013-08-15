@@ -20,14 +20,7 @@
 #define MADVAL(x) (((x) << 5) | 8)
 //static uint8_t madctlcurrent = MADVAL(MADCTLGRAPHICS);
 
-typedef struct {
-	uint8_t command;   // ST7735 command byte
-	uint8_t delay;     // ms delay after
-	uint8_t len;       // length of parameter data
-	uint8_t data[16];  // parameter data
-} ST7735_cmdBuf;
-
-static const ST7735_cmdBuf initializers[] = {
+const St7735r::instruction St7735r::initializers[] = {
 		// SWRESET Software reset
 		{ 0x01, 150, 0, { 0 } },
 		// SLPOUT Leave sleep mode
@@ -103,9 +96,9 @@ void St7735r::init() {
 	_pin_reset.set(Bit_SET);
 	delay(10);
 
-	for (const ST7735_cmdBuf * cmd = initializers; cmd->command; cmd++) {
+	for (const instruction * cmd = initializers; cmd->command; cmd++) {
 		this->command(cmd->command);
-		if (cmd->len) write8(1, cmd->data, cmd->len);
+		if (cmd->len) write8(true, cmd->data, cmd->len);
 		if (cmd->delay) delay(cmd->delay);
 	}
 
@@ -114,14 +107,14 @@ void St7735r::init() {
 	_dma.setFunctionToConf();
 }
 
-void St7735r::write8(uint8_t is_data, const uint8_t * data, uint16_t length) {
+void St7735r::write8(bool is_data, const uint8_t * data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
 	_spi.write8(data, length);
 	_pin_ss.set(Bit_SET);
 }
 
-void St7735r::write16(uint8_t is_data, const uint16_t * data, uint16_t length) {
+void St7735r::write16(bool is_data, const uint16_t * data, uint16_t length) {
 
 	SPI_DataSizeConfig(_spi.base(), SPI_DataSize_16b );
 
@@ -132,12 +125,13 @@ void St7735r::write16(uint8_t is_data, const uint16_t * data, uint16_t length) {
 	_dma.setMemoryToConf((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
 			DMA_MemoryInc_Enable );
 	_dma.setTransferToConf(length, DMA_DIR_PeripheralDST);
+	_dma.initWithConf();
 	_dma.run();
 
 	_pin_ss.set(Bit_SET);
 }
 
-void St7735r::write16(uint8_t is_data, const uint16_t data, uint16_t length) {
+void St7735r::write16(bool is_data, const uint16_t data, uint16_t length) {
 
 	SPI_DataSizeConfig(_spi.base(), SPI_DataSize_16b );
 
@@ -163,12 +157,12 @@ void St7735r::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
 		uint16_t y1) {
 
 	command(ST7735_CASET);
-	this->write16(1, x0 + _offset_x);
-	this->write16(1, x1 + _offset_x);
+	this->write16(true, x0 + _offset_x);
+	this->write16(true, x1 + _offset_x);
 
 	command(ST7735_RASET);
-	this->write16(1, y0 + _offset_y);
-	this->write16(1, y1 + _offset_y);
+	this->write16(true, y0 + _offset_y);
+	this->write16(true, y1 + _offset_y);
 
 	command(ST7735_RAMWR);
 }
