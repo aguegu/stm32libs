@@ -30,6 +30,10 @@ void Gpio::set(BitAction bit) {
 	GPIO_WriteBit(_port, _pin, bit);
 }
 
+void Gpio::set(bool bit) {
+	GPIO_WriteBit(_port, _pin, bit? Bit_SET: Bit_RESET);
+}
+
 BitAction Gpio::getInput() {
 	return (BitAction) GPIO_ReadInputDataBit(_port, _pin);
 }

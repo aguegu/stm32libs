@@ -38,9 +38,7 @@ void Hd44780Basic::setCache(uint8_t value) {
 }
 
 void Hd44780Basic::setCache(uint8_t index, uint8_t value) {
-	if (index >= _cache_length)
-		return;
-
+	assert_param(index < _cache_length);
 	_cache[index] = value;
 }
 
@@ -68,8 +66,7 @@ void Hd44780Basic::putCache() const {
 }
 
 void Hd44780Basic::printf(uint8_t index, const char *__fmt, ...) {
-	if (index >= _cache_length)
-		return;
+	assert_param(index < _cache_length);
 
 	va_list ap;
 	va_start(ap, __fmt);
@@ -80,7 +77,7 @@ void Hd44780Basic::printf(uint8_t index, const char *__fmt, ...) {
 void Hd44780Basic::printf(const char *__fmt, ...) {
 	va_list ap;
 	va_start(ap, __fmt);
-	vsnprintf(_cache, _cache_length, __fmt, ap);
+	this->printf(0, __fmt, ap);
 	va_end(ap);
 }
 
