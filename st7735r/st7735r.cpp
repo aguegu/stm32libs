@@ -149,6 +149,7 @@ void St7735r::write16(uint8_t is_data, const uint16_t data, uint16_t length) {
 	_dma.setMemoryToConf((uint32_t) &data, DMA_MemoryDataSize_HalfWord,
 			DMA_MemoryInc_Disable );
 	_dma.setTransferToConf(length, DMA_DIR_PeripheralDST);
+	_dma.initWithConf();
 	_dma.run();
 
 	_pin_ss.set(Bit_SET);
