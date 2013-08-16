@@ -26,7 +26,7 @@ private:
 	Gpio  & _pin_d6;
 	Gpio  & _pin_d7;
 
-	void setDataPins(uint8_t c, bool b) const;
+	void setDataPins(uint8_t c, bool high) const;
 	void setDataPins(uint8_t c) const;
 
 	void transmit(bool isData, uint8_t val) const;

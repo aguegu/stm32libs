@@ -19,8 +19,8 @@ Hd44780Gpio::~Hd44780Gpio() {
 
 }
 
-void Hd44780Gpio::setDataPins(uint8_t c, bool b) const {
-	if (b)
+void Hd44780Gpio::setDataPins(uint8_t c, bool high) const {
+	if (high)
 		c >>= 4;
 
 	_pin_d4.set(c & 0x01);

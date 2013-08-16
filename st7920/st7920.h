@@ -31,12 +31,10 @@ public:
 	void configureFunction(bool interface8 = false, bool re = false,
 			bool graphic = false);
 
-	void display();
-
-protected:
-
 	void setDdRam(uint8_t address); // Set address in Text Mode
-	void writeData(uint8_t c);
+
+	void transmit(bool isData, uint8_t c);
+	void transmit(bool isData, uint8_t *p, uint8_t length);
 
 private:
 
@@ -47,12 +45,8 @@ private:
 	Gpio & _pin_d6;
 	Gpio & _pin_d7;
 
-	inline void pulseEn();
-	inline void setDB2(uint8_t c, bool high);
-
+	void setDataPins(uint8_t c, bool high);
 	void setCgRam(uint8_t value);
-
-	void writeCmd(uint8_t c);
 };
 
 #endif /* ST7920_H_ */
