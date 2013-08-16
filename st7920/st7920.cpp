@@ -126,6 +126,10 @@ void St7920::setDataPins(uint8_t c, bool high) {
 
 	_pin_en.set(Bit_SET);
 	_pin_en.set(Bit_RESET);
+
+#ifndef USE_FULL_ASSERT
+	delayMicroseconds(0x0c);
+#endif
 }
 
 void St7920::printWord(char *p) {
