@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/62/trunk/aGueguLibrary/DotMatrix
+END
+Font0503.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0503.c
+END
+DotMatrix.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/53/trunk/aGueguLibrary/DotMatrix/DotMatrix.h
+END
+Font0704.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0704.c
+END
+DotFont.h
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/62/trunk/aGueguLibrary/DotMatrix/DotFont.h
+END
+Font0705.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0705.c
+END
+DotString.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/53/trunk/aGueguLibrary/DotMatrix/DotString.h
+END
+Font0503.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0503.h
+END
+Font0704.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0704.h
+END
+Font0705.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/Font0705.h
+END
+DotMatrixDriver.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/54/trunk/aGueguLibrary/DotMatrix/DotMatrixDriver.cpp
+END
+DotMatrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/53/trunk/aGueguLibrary/DotMatrix/DotMatrix.cpp
+END
+DotMatrixDriver.h
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/54/trunk/aGueguLibrary/DotMatrix/DotMatrixDriver.h
+END
+DotFont.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/62/trunk/aGueguLibrary/DotMatrix/DotFont.cpp
+END
+DotString.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/61/trunk/aGueguLibrary/DotMatrix/DotString.cpp
+END

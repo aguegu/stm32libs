@@ -1,0 +1,34 @@
+/*
+	Font_0705.cpp
+	Digital Font of 7x5 Dot Matrix
+	library for Arduino to drive LED Dot Matrix Display dirven by 74HC595(column) and 74HC138(row)
+
+	Created on: 2012-1-22
+	Updated on: 2012-2-26
+	Author: Weihong Guan
+	Blog: http://aguegu.net
+	E-mail: weihong.guan@gmail.com
+	Code license: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
+	http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+	source hosting: http://code.google.com/p/aguegu-arduino-library/
+ */
+
+#include "Font0705.h"
+
+prog_uint8_t FONT_0705_WIDTH[] PROGMEM= {5};
+prog_uint8_t FONT_0705_HEIGHT[] PROGMEM = {7};
+
+prog_uint8_t FONT_0705[] PROGMEM =
+{
+	0x7f, 0x7f, 0x41, 0x7f, 0x7f, //0
+	0x00, 0x00, 0x7f, 0x7f, 0x00, //1
+	0x79, 0x79, 0x49, 0x4f, 0x4f, //2
+	0x49, 0x49, 0x49, 0x7f, 0x7f, //3
+	0x3f, 0x3f, 0x20, 0x7f, 0x7f, //4
+	0x4f, 0x4f, 0x49, 0x79, 0x79, //5
+	0x7f, 0x7f, 0x49, 0x79, 0x79, //6
+	0x01, 0x01, 0x01, 0x7f, 0x7f, //7
+	0x7f, 0x7f, 0x49, 0x7f, 0x7f, //8
+	0x4f, 0x4f, 0x49, 0x7f, 0x7f, //9
+};
