@@ -16,16 +16,10 @@
 
 #include "dot-matrix.h"
 
-DotMatrix::DotMatrix(uint8_t colCount, uint8_t rowCount) {
-	_col_count = colCount;
-	_row_count = rowCount;
-
-	_bytes_per_row = _col_count / 8;
-	if (_col_count % 8)
-		_bytes_per_row++;
-
-	_bytes_length = _bytes_per_row * _row_count;
-
+DotMatrix::DotMatrix(uint8_t colCount, uint8_t rowCount) :
+		_col_count(colCount), _row_count(rowCount), _bytes_per_row(
+			(_col_count + 7) / 8), _bytes_length(_bytes_per_row * _row_count)
+{
 	_cache = (uint8_t *) malloc(sizeof(uint8_t) * (_bytes_length + 1));
 	setMoveDirection(this->BYTE_IN_COL_POSI);
 
@@ -40,17 +34,21 @@ void DotMatrix::clear(uint8_t c) {
 	memset(_cache, c, _bytes_length);
 }
 
-void DotMatrix::reverseDot(uint8_t col, uint8_t row) {
+void DotMatrix::toogleDot(uint8_t col, uint8_t row) {
 	this->setDot(col, row, !getDot(col, row));
 }
 
 void DotMatrix::setDot(uint8_t col, uint8_t row, bool b) {
 	uint16_t i = getIndex(col, row);
 
-	writeHighBitInByte(*(_cache+i), col & 0x07, b);
+	writeHighBitInByte(*(_cache + i), col & 0x07, b);
 }
 
-void DotMatrix::setLine(uint8_t cA, uint8_t rA, uint8_t cB, uint8_t rB, bool on) {
+void DotMatrix::setLine(uint8_t cA,
+	uint8_t rA,
+	uint8_t cB,
+	uint8_t rB,
+	bool on) {
 	uint8_t cMin, cMax, rMin, rMax;
 
 	cMin = rawmin(cA, cB);
@@ -97,7 +95,11 @@ void DotMatrix::setLine(uint8_t cA, uint8_t rA, uint8_t cB, uint8_t rB, bool on)
 	}
 }
 
-void DotMatrix::setRect(uint8_t cA, uint8_t rA, uint8_t cB, uint8_t rB, bool on) {
+void DotMatrix::setRect(uint8_t cA,
+	uint8_t rA,
+	uint8_t cB,
+	uint8_t rB,
+	bool on) {
 	uint8_t cMin, cMax, rMin, rMax;
 
 	cMin = rawmin(cA, cB);
@@ -169,7 +171,7 @@ void DotMatrix::moveBitInColNega(bool recycle) {
 	for (uint8_t r = _row_count; r--;) {
 		bool b0 = readHighBitInByte(*p, 0);
 		for (uint8_t i = _bytes_per_row - 1; i--;)
-		{
+				{
 			bool b = readHighBitInByte(*(p+1), 0);
 			*p <<= 1;
 			writeLowBitInByte(*p, 0, b);
@@ -178,7 +180,7 @@ void DotMatrix::moveBitInColNega(bool recycle) {
 
 		*p <<= 1;
 		if (recycle)
-			writeLowBitInByte(*p, 0, b0);
+		writeLowBitInByte(*p, 0, b0);
 
 		p++;
 	}
@@ -189,7 +191,7 @@ void DotMatrix::moveBitInColPosi(bool recycle) {
 	for (uint8_t r = _row_count; r--;) {
 		bool b0 = readLowBitInByte(*p, 0);
 		for (uint8_t i = _bytes_per_row - 1; i--;)
-		{
+				{
 			bool b = readLowBitInByte(*(p-1), 0);
 			*p >>= 1;
 			writeHighBitInByte(*p, 0, b);
@@ -198,7 +200,7 @@ void DotMatrix::moveBitInColPosi(bool recycle) {
 
 		*p >>= 1;
 		if (recycle)
-			writeHighBitInByte(*p, 0, b0);
+		writeHighBitInByte(*p, 0, b0);
 
 		p += _bytes_per_row + _bytes_per_row - 1;
 	}
@@ -211,9 +213,9 @@ void DotMatrix::moveBitInRowNega(bool recycle) {
 	memcpy(_cache, _cache + _bytes_per_row, _bytes_length - _bytes_per_row);
 
 	recycle ?
-			memcpy(_cache + _bytes_length - _bytes_per_row, pTemp,
+				memcpy(_cache + _bytes_length - _bytes_per_row, pTemp,
 					_bytes_per_row) :
-			memset(_cache + _bytes_length - _bytes_per_row, 0x00,
+				memset(_cache + _bytes_length - _bytes_per_row, 0x00,
 					_bytes_per_row);
 }
 
@@ -222,16 +224,16 @@ void DotMatrix::moveBitInRowPosi(bool recycle) {
 	memcpy(pTemp, _cache + _bytes_length - _bytes_per_row, _bytes_per_row);
 
 	memmove(_cache + _bytes_per_row, _cache,
-			_bytes_length - _bytes_per_row);
+		_bytes_length - _bytes_per_row);
 
 	recycle ?
-			memcpy(_cache, pTemp, _bytes_per_row) :
-			memset(_cache, 0x00, _bytes_per_row);
+				memcpy(_cache, pTemp, _bytes_per_row) :
+				memset(_cache, 0x00, _bytes_per_row);
 }
 
 void DotMatrix::moveByteInColNega(bool recycle) {
 	uint8_t * p = _cache;
-	for (uint8_t r = _row_count; r--;) 	{
+	for (uint8_t r = _row_count; r--;) {
 		uint8_t temp = recycle ? *p : 0x00;
 		memcpy(p, p + 1, _bytes_per_row - 1);
 
@@ -252,7 +254,7 @@ void DotMatrix::moveByteInColPosi(bool recycle) {
 
 void DotMatrix::moveBitInByteNega(bool recycle) {
 	uint8_t *p = _cache;
-	for (uint16_t index = _bytes_length; index--; p++) 	{
+	for (uint16_t index = _bytes_length; index--; p++) {
 		bool temp = *p & 0x80;
 		*p <<= 1;
 		if (recycle && temp)
@@ -314,6 +316,5 @@ uint8_t DotMatrix::andValue() {
 	uint8_t c = 0xff;
 	for (uint16_t i = _bytes_length; i--;)
 		c &= _cache[i];
-
 	return c;
 }

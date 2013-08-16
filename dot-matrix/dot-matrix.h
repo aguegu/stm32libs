@@ -31,7 +31,7 @@ public:
 	void putByte(uint8_t col, uint8_t row, uint8_t value);
 	uint8_t getByte(uint16_t index);
 
-	void reverseDot(uint8_t col, uint8_t row);
+	void toogleDot(uint8_t col, uint8_t row);
 	void setDot(uint8_t col, uint8_t row, bool b = true);
 	uint8_t getDot(uint8_t col, uint8_t row) const;
 
@@ -62,7 +62,6 @@ public:
 	uint8_t andValue();
 
 protected:
-
 	void moveBitInColNega(bool recycle);
 	void moveBitInColPosi(bool recycle);
 	void moveBitInRowNega(bool recycle);
@@ -77,16 +76,14 @@ protected:
 	void (DotMatrix::*_funMoveDirection)(bool);
 
 private:
-
-	uint8_t _col_count;
-	uint8_t _row_count;
-	uint8_t _bytes_per_row;
-	uint16_t _bytes_length;
+	const uint8_t _col_count;
+	const uint8_t _row_count;
+	const uint8_t _bytes_per_row;
+	const uint16_t _bytes_length;
 
 	uint8_t * _cache;
 
 	uint16_t getIndex(uint8_t col, uint8_t row) const;
-
 };
 
 #endif /* DOTMATRIX_H_ */
