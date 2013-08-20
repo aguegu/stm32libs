@@ -43,13 +43,6 @@ public:
 	uint8_t getMaxRow() const ;
 
 private:
-
-	void print() const ;
-
-	void printH() const ;
-
-	void printV() const;
-
 	DotMatrix & _dm;
 	const DotFont & _df;
 
@@ -58,6 +51,10 @@ private:
 	uint8_t _index;
 	uint16_t _indent;
 	bool _vertical;
+
+	void print() const ;
+	void printH() const ;
+	void printV() const;
 };
 
 #endif /* DOT_CHAR_H_ */

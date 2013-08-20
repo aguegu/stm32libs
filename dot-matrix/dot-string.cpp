@@ -53,9 +53,7 @@ void DotString::postAt(uint8_t col, uint8_t row) {
 }
 
 void DotString::setChar(uint8_t index, char chr) {
-	if (index >= _length)
-		return;
-
+	assert_param(index < _length);
 	*(_str + index) = chr;
 }
 

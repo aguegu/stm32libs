@@ -18,12 +18,11 @@ struct DotFont {
 	const uint8_t *pattern;
 };
 
-#ifdef USE_VFONT_7X3
 extern const DotFont vfont_7x3;
-#endif
-
-#ifdef USE_VFONT_5X3
 extern const DotFont vfont_5x3;
-#endif
+extern const DotFont vfont_6x3;
+extern const DotFont vfont_8x3;
+extern const DotFont vfont_7x5;
+
 
 #endif /* DOT_FONT_H_ */
