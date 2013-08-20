@@ -7,7 +7,7 @@
 
 #include "dot-matrix/dot-font.h"
 
-#ifdef VFONT_7X3
+#ifdef USE_VFONT_7X3
 
 static const uint8_t vfont_7x3_pattern[] = {
 	0x00, 0x00, 0x00, // Space
@@ -121,3 +121,7 @@ const DotFont vfont_7x3 = {
 };
 
 #endif
+
+#ifdef
+
+
