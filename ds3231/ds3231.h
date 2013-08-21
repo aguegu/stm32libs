@@ -38,13 +38,11 @@ public:
 	static uint8_t dec2hex(uint8_t dec);
 
 	void refresh(bool only_time = false);
-	float getTemperature();
+	float getTemperature();	// update every 64 seconds
 
 private:
 	static const uint8_t _address = 0x68;
 	I2c & _i2c;
-	uint8_t setReg(uint8_t reg, uint8_t data);
-	uint8_t getReg(uint8_t reg);
 	uint8_t *_datetime;
 };
 #endif /* DS3231_H_ */
