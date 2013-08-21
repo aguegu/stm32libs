@@ -2,6 +2,8 @@
 #define I2C_H
 
 #include <stm32f10x_i2c.h>
+#include <cstdlib>
+#include <cstring>
 
 class I2c {
 public:
@@ -14,6 +16,10 @@ public:
 
 	uint8_t write(uint8_t slave_address, const uint8_t* buf, uint32_t length);
 	uint8_t read(uint8_t slave_address, uint8_t* buf, uint32_t length);
+	uint8_t setReg(uint8_t slave_address, uint8_t reg_address, const uint8_t* buf, uint32_t length);
+	uint8_t setReg(uint8_t slave_address, uint8_t reg_address, const uint8_t value);
+	uint8_t getReg(uint8_t slave_address, uint8_t reg_address, uint8_t* buf, uint32_t length);
+
 private:
 	I2C_TypeDef * const _i2c;
 	const uint16_t _FLAG_TIMEOUT;
