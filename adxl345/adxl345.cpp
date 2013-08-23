@@ -48,6 +48,8 @@ void Adxl345::measureRawSums() {
 }
 
 void Adxl345::calibrate() {
+	_rawdata_sums[0] = _rawdata_sums[1] = _rawdata_sums[2] = 0;
+
 	for (uint16_t i = 0; i < 400; i++) {
 		this->measureRawSums();
 		delayMicroseconds(2500);
