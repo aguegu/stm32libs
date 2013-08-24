@@ -18,7 +18,6 @@ Ds3231::~Ds3231() {
 }
 
 void Ds3231::init() {
-	_i2c.init();
 	_i2c.setReg(_address, 0x0e, 0x9c);
 	_i2c.setReg(_address, 0x0f, 0x00);
 }

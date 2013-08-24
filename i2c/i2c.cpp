@@ -3,7 +3,7 @@
 #define within(time, fun) for (t = (time); (fun) && --t;)
 
 I2c::I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout,
-	uint16_t long_timeout) :
+		uint16_t long_timeout) :
 		_i2c(i2c), _FLAG_TIMEOUT(flat_timeout), _LONG_TIMEOUT(long_timeout) {
 	RCC_APB1PeriphClockCmd(rcc_apb1periph_i2cx, ENABLE);
 }
@@ -13,7 +13,7 @@ I2c::~I2c() {
 }
 
 void I2c::init(uint16_t mode, uint32_t clock_speed, uint16_t ack,
-	uint16_t acknowledged_address, uint16_t duty_cycle) {
+		uint16_t acknowledged_address, uint16_t duty_cycle) {
 
 	I2C_DeInit(_i2c);
 
@@ -30,53 +30,69 @@ void I2c::init(uint16_t mode, uint32_t clock_speed, uint16_t ack,
 	I2C_Cmd(_i2c, ENABLE);
 }
 
-uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length) {
+uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length,
+		FunctionalState sendstop) {
 	vu32 t = 0;
 
-	if (!length) return 0;
+	if (!length)
+		return 0;
 
 	within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ));
-	if (!t) return 0;
+	if (!t)
+		return 0;
 
 	I2C_GenerateSTART(_i2c, ENABLE);
 	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
-	if (!t) return 1;
+	if (!t)
+		return 1;
 
 	I2C_Send7bitAddress(_i2c, slave_address << 1, I2C_Direction_Transmitter);
 	within(_FLAG_TIMEOUT,
-		!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED ));
-	if (!t) return 2;
+			!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED ));
+	if (!t)
+		return 2;
 
 	do {
 		I2C_SendData(_i2c, *buf++);
 		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF ));
-		if (!t) return 3;
+		if (!t)
+			return 3;
 	} while (--length);
 
-	I2C_GenerateSTOP(_i2c, ENABLE);
-	within(_LONG_TIMEOUT, I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF ));
-	if (!t) return 4;
+	I2C_GenerateSTOP(_i2c, sendstop);
+	if (sendstop) {
+		within(_LONG_TIMEOUT, I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF ));
+		if (!t)
+			return 4;
+	}
 
 	return 5;
 }
 
-uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
+uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
+		FunctionalState checkbusy) {
 	vu32 t = 0;
-	if (!length) return 0;
+	if (!length)
+		return 0;
 
-	within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ));
-	if (!t) return 0;
+	if (checkbusy) {
+		within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_BUSY ));
+		if (!t)
+			return 0;
+	}
 
 	I2C_AcknowledgeConfig(_i2c, ENABLE);
 	I2C_NACKPositionConfig(_i2c, I2C_NACKPosition_Current);
 	I2C_GenerateSTART(_i2c, ENABLE);
 
 	within(_FLAG_TIMEOUT, !I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_MODE_SELECT ));
-	if (!t) return 1;
+	if (!t)
+		return 1;
 
 	I2C_Send7bitAddress(_i2c, slave_address << 1, I2C_Direction_Receiver);
 	within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_ADDR ));
-	if (!t) return 2;
+	if (!t)
+		return 2;
 
 	if (length == 1) {
 		I2C_AcknowledgeConfig(_i2c, DISABLE);
@@ -87,7 +103,8 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 		__enable_irq();
 
 		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_RXNE ));
-		if (!t) return 3;
+		if (!t)
+			return 3;
 
 		*data = I2C_ReceiveData(_i2c);
 	} else if (length == 2) {
@@ -129,19 +146,20 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length) {
 
 		// wait for byte N
 		within(_FLAG_TIMEOUT,
-			!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_RECEIVED ));
+				!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_RECEIVED ));
 		*data++ = I2C_ReceiveData(_i2c);
 		length = 0;
 	}
 
 	within(_FLAG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ));
-	if (!t) return 4;
+	if (!t)
+		return 4;
 
 	return 5;
 }
 
 uint8_t I2c::setReg(uint8_t slave_address, uint8_t reg_address,
-	const uint8_t* buf, uint32_t length) {
+		const uint8_t* buf, uint32_t length) {
 
 	assert_param(length);
 	uint8_t *p = (uint8_t *) malloc(sizeof(uint8_t) * (length + 1));
@@ -152,12 +170,14 @@ uint8_t I2c::setReg(uint8_t slave_address, uint8_t reg_address,
 	return result;
 }
 
-uint8_t I2c::setReg(uint8_t slave_address, uint8_t reg_address, const uint8_t value) {
+uint8_t I2c::setReg(uint8_t slave_address, uint8_t reg_address,
+		const uint8_t value) {
 	return this->setReg(slave_address, reg_address, &value, 1);
 }
 
-uint8_t I2c::getReg(uint8_t slave_address, uint8_t reg_address, uint8_t* buf, uint32_t length) {
-	this->write(slave_address, &reg_address, 1);
-	return this->read(slave_address, buf, length);
+uint8_t I2c::getReg(uint8_t slave_address, uint8_t reg_address, uint8_t* buf,
+		uint32_t length) {
+	this->write(slave_address, &reg_address, 1, DISABLE);
+	return this->read(slave_address, buf, length, DISABLE);
 
 }
