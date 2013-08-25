@@ -33,7 +33,7 @@ public:
 	void flush();
 
 protected:
-	virtual void onTXE();
+	void onTXE();
 
 private:
 	Gpio & _de;
