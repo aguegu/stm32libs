@@ -26,7 +26,7 @@ public:
 		uint32_t rcc_apbx_periph,
 		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
 		uint8_t buff_size = 128,
-		uint16_t time_out = 1000);
+		uint16_t time_out = 4);
 	virtual ~Usart();
 
 	void init(uint32_t baudrate = 9600, uint16_t word_length =
@@ -53,8 +53,9 @@ public:
 
 	USART_TypeDef * const base();
 
+protected:
 	virtual void onTXE();
-	void onRXNE();
+	virtual void onRXNE();
 
 private:
 	USART_TypeDef * const _usart;

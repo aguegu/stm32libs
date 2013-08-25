@@ -20,8 +20,8 @@ public:
 		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
 		Gpio & de, Gpio & re,
 		uint8_t buff_size = 128,
-		uint16_t time_out = 1000);
-	~UsartRs485();
+		uint16_t time_out = 4);
+	virtual ~UsartRs485();
 
 	void init(uint32_t baudrate = 9600,
 		uint16_t word_length = USART_WordLength_8b,
@@ -32,11 +32,12 @@ public:
 
 	void flush();
 
+protected:
+	virtual void onTXE();
+
 private:
 	Gpio & _de;
 	Gpio & _re;
-
-	void onTXE();
 };
 
 #endif /* USART_H_ */
