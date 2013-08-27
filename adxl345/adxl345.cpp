@@ -7,7 +7,7 @@
 
 #include "adxl345/adxl345.h"
 
-float Adxl345::_accelerations[3] = { 0.0, 0.0, 0.0 };
+int16_t Adxl345::_accelerations[3] = { 0, 0, 0 };
 float Adxl345::_scales[3] = { -0.03828125, -0.03828125, -0.03828125 };
 float Adxl345::_bias[3] = { 0.0, 0.0, 0.0 };
 int32_t Adxl345::_rawdata_sums[3] = { 0, 0, 0 };
@@ -26,6 +26,14 @@ void Adxl345::init() {
 	_i2c.setReg(0x53, 0x2d, 0x08); // 345
 	_i2c.setReg(0x53, 0x2c, 0x0b); // 345
 	_i2c.setReg(0x53, 0x31, 0x09); // 345
+
+	_i2c.setReg(0x53, 0x1e, -16 / 4); // 345
+	_i2c.setReg(0x53, 0x1f, -18 / 4); // 345
+	_i2c.setReg(0x53, 0x20, -6 / 4); // 345
+
+//	_i2c.setReg(0x53, 0x1e, 0); // 345
+//	_i2c.setReg(0x53, 0x1f, 0); // 345
+//	_i2c.setReg(0x53, 0x20, 0); // 345
 	delay(10);
 }
 
@@ -33,9 +41,7 @@ void Adxl345::measure() {
 	static uint8_t data[6];
 	_i2c.getReg(_address, 0x32, data, 6);
 	for (uint8_t i = 0; i < 3; i++)
-		_accelerations[i] = (int16_t) make16(data[i + i + 1], data[i + i])
-				* _scales[i]
-				+ _bias[i];
+		_accelerations[i] = (int16_t) make16(data[i + i + 1], data[i + i]);
 }
 
 void Adxl345::measureRawSums() {
@@ -68,13 +74,12 @@ void Adxl345::calibrate() {
 void Adxl345::calc() {
 	for (uint8_t i = 0; i < 3; i++) {
 		_accelerations[i] = (_rawdata_sums[i] / (float) _measure_count)
-				* _scales[i]
-				+ _bias[i];
+				* _scales[i] + _bias[i];
 		_rawdata_sums[i] = 0;
 	}
 	_measure_count = 0;
 }
 
-const float * Adxl345::getAcceleratins() {
+const int16_t * Adxl345::getAcceleratins() {
 	return _accelerations;
 }

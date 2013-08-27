@@ -23,13 +23,13 @@ public:
 	void measureRawSums();
 	void calibrate();
 	void calc();
-	const float *getAcceleratins();
+	const int16_t *getAcceleratins();
 
 private:
 	I2c & _i2c;
 
 	static const uint8_t _address = 0x53;
-	static float _accelerations[3];
+	static int16_t _accelerations[3];
 	static float _scales[3];
 	static float _bias[3];
 	static int32_t _rawdata_sums[3];
