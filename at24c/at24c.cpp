@@ -38,6 +38,6 @@ uint8_t At24c::read(uint16_t reg_address, uint8_t * buff, uint16_t length) {
 	uint8_t p[2];
 	p[0] = reg_address >> 8;
 	p[1] = reg_address & 0xff;
-	_i2c.write(0x50, p, 2, DISABLE);
-	return _i2c.read(0x50, buff, length, DISABLE);
+	_i2c.write(reg_address, p, 2, DISABLE);
+	return _i2c.read(reg_address, buff, length, DISABLE);
 }
