@@ -19,6 +19,7 @@ public:
 	Adxl345(I2c & i2c);
 	virtual ~Adxl345();
 	void init();
+	void setOffsets(uint8_t *p, uint8_t length = 3);
 	void measure();
 	void measureRawSums();
 	void calibrate();

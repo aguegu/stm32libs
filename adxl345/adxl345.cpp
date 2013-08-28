@@ -23,17 +23,14 @@ Adxl345::~Adxl345() {
 }
 
 void Adxl345::init() {
-	_i2c.setReg(0x53, 0x2d, 0x08); // 345
-	_i2c.setReg(0x53, 0x2c, 0x0b); // 345
-	_i2c.setReg(0x53, 0x31, 0x09); // 345
+	_i2c.setReg(_address, 0x2d, 0x08); // 345
+	_i2c.setReg(_address, 0x2c, 0x0b); // 345
+	_i2c.setReg(_address, 0x31, 0x09); // 345
+	delay(10);
+}
 
-	_i2c.setReg(0x53, 0x1e, -16 / 4); // 345
-	_i2c.setReg(0x53, 0x1f, -18 / 4); // 345
-	_i2c.setReg(0x53, 0x20, -6 / 4); // 345
-
-//	_i2c.setReg(0x53, 0x1e, 0); // 345
-//	_i2c.setReg(0x53, 0x1f, 0); // 345
-//	_i2c.setReg(0x53, 0x20, 0); // 345
+void Adxl345::setOffsets(uint8_t *p, uint8_t length) {
+	_i2c.setReg(_address, 0x1e, p, rawmin(length, 3));
 	delay(10);
 }
 
