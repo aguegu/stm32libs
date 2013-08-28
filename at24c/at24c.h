@@ -13,7 +13,7 @@
 
 class At24c {
 public:
-	At24c(I2c & i2c, uint8_t slave_address = 0x50);
+	At24c(I2c & i2c, uint8_t pagesize, uint8_t slave_address = 0x50);
 	virtual ~At24c();
 
 	uint8_t write(uint16_t reg_address, const void * buff, uint16_t length);
@@ -23,6 +23,7 @@ public:
 
 private:
 	I2c & _i2c;
+	const uint8_t _pagesize;
 	const uint8_t _slave_address;
 };
 
