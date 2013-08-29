@@ -126,7 +126,7 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 		*data++ = _i2c->DR;
 	} else {
 		(void) _i2c->SR2;                           // Clear ADDR flag
-		while (length-- != 3) {
+		while (length-- > 3) {
 			// EV7 -- cannot guarantee 1 transfer completion time, wait for BTF
 			//        instead of RXNE
 			within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF));
@@ -137,9 +137,9 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 
 		// EV7_2 -- Figure 1 has an error, doesn't read N-2 !
 		I2C_AcknowledgeConfig(_i2c, DISABLE); // Clear Ack bit
-		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-2
 
 		__disable_irq();
+		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-2
 		I2C_GenerateSTOP(_i2c, ENABLE);			// program stop
 		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-1
 		__enable_irq();
