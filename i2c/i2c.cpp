@@ -52,16 +52,17 @@ uint8_t I2c::write(uint8_t slave_address, const uint8_t* buf, uint32_t length,
 	if (!t)
 		return 2;
 
-	do {
+	while (length--) {
 		I2C_SendData(_i2c, *buf++);
-		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF ));
+		within(_FLAG_TIMEOUT,
+				!I2C_CheckEvent(_i2c, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 		if (!t)
 			return 3;
-	} while (--length);
+	}
 
 	I2C_GenerateSTOP(_i2c, sendstop);
 	if (sendstop) {
-		within(_LONG_TIMEOUT, I2C_GetFlagStatus(I2C1, I2C_FLAG_STOPF ));
+		within(_LONG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ));
 		if (!t)
 			return 4;
 	}
@@ -119,7 +120,7 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 
 		__disable_irq();
 		I2C_GenerateSTOP(_i2c, ENABLE);
-		*data++ = _i2c->DR;
+		*data++ = I2C_ReceiveData(_i2c);
 		__enable_irq();
 
 		*data++ = _i2c->DR;
@@ -136,13 +137,12 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 
 		// EV7_2 -- Figure 1 has an error, doesn't read N-2 !
 		I2C_AcknowledgeConfig(_i2c, DISABLE); // Clear Ack bit
+		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-2
 
 		__disable_irq();
-		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-2
 		I2C_GenerateSTOP(_i2c, ENABLE);			// program stop
-		__enable_irq();
-
 		*data++ = I2C_ReceiveData(_i2c);			// receive byte N-1
+		__enable_irq();
 
 		// wait for byte N
 		within(_FLAG_TIMEOUT,
