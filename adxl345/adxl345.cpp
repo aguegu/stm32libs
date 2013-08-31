@@ -33,11 +33,10 @@ void Adxl345::setOffsets(uint8_t index, uint8_t offset) {
        _i2c.setReg(_address, 0x1e + index, offset);
 }
 
-void Adxl345::measure() {
-	static uint8_t data[6];
-	_i2c.getReg(_address, 0x32, data, 6);
-	for (uint8_t i = 0; i < 3; i++)
-		_accelerations[i] = (int16_t) make16(data[i + i + 1], data[i + i]);
+void Adxl345::measure(uint8_t index) {
+	uint8_t data[2];
+	_i2c.getReg(_address, 0x32 + index + index, data, 2);
+	_accelerations[index] = (int16_t) make16(data[1], data[0]);
 }
 
 void Adxl345::measureRawSums() {

@@ -20,7 +20,7 @@ public:
 	virtual ~Adxl345();
 	void init();
 	void setOffsets(uint8_t index, uint8_t offset);
-	void measure();
+	void measure(uint8_t index);
 	void measureRawSums();
 	void calibrate();
 	void calc();

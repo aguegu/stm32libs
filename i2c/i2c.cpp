@@ -119,11 +119,11 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 		within(_FLAG_TIMEOUT, !I2C_GetFlagStatus(_i2c, I2C_FLAG_BTF));
 
 		__disable_irq();
-		I2C_GenerateSTOP(_i2c, ENABLE);
 		*data++ = I2C_ReceiveData(_i2c);
+		I2C_GenerateSTOP(_i2c, ENABLE);
 		__enable_irq();
 
-		*data++ = _i2c->DR;
+		*data++ = I2C_ReceiveData(_i2c);
 	} else {
 		(void) _i2c->SR2;                           // Clear ADDR flag
 		while (length-- > 3) {
