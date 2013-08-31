@@ -29,9 +29,8 @@ void Adxl345::init() {
 	delay(10);
 }
 
-void Adxl345::setOffsets(uint8_t *p, uint8_t length) {
-	_i2c.setReg(_address, 0x1e, p, rawmin(length, 3));
-	delay(10);
+void Adxl345::setOffsets(uint8_t index, uint8_t offset) {
+       _i2c.setReg(_address, 0x1e + index, offset);
 }
 
 void Adxl345::measure() {
