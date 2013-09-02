@@ -31,9 +31,9 @@ private:
 	const uint8_t _address;
 	int16_t _accelerations[3];
 	static float _scales[3];
-	int32_t _rawdata_sums[3];
 	uint16_t _measure_count;
-	uint8_t _bias[3];
+	int16_t _bias[3];
+	int32_t _rawdata_sums[3];
 
 	float _unit_g;
 };
