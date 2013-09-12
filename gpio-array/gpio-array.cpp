@@ -25,13 +25,17 @@ void GpioArray::setGpio(uint8_t index, Gpio & gpio) {
 }
 
 void GpioArray::init(GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed) {
-	for (uint8_t i = 0; i < _length; i++)
+	for (uint8_t i = 0; i < _length; i++) {
+		assert_param(_gpios[i] != NULL);
 		_gpios[i]->init(mode, speed);
+	}
 }
 
 void GpioArray::set(uint32_t val) {
-	for (uint8_t i = 0; i < _length; i++)
+	for (uint8_t i = 0; i < _length; i++) {
+		assert_param(_gpios[i] != NULL);
 		_gpios[i]->set(bitRead(val, i));
+	}
 }
 
 void GpioArray::toggle() {
@@ -40,14 +44,18 @@ void GpioArray::toggle() {
 
 uint32_t GpioArray::getOutput() {
 	uint32_t val = 0;
-	for (uint8_t i = 0; i < _length; i++)
+	for (uint8_t i = 0; i < _length; i++) {
+		assert_param(_gpios[i] != NULL);
 		bitWrite(val, i, _gpios[i]->getOutput());
+	}
 	return val;
 }
 
 uint32_t GpioArray::getInput() {
 	uint32_t val = 0;
-	for (uint8_t i = 0; i < _length; i++)
+	for (uint8_t i = 0; i < _length; i++) {
+		assert_param(_gpios[i] != NULL);
 		bitWrite(val, i, _gpios[i]->getInput());
+	}
 	return val;
 }

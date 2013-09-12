@@ -22,6 +22,7 @@ public:
 	void toggle();
 	uint32_t getOutput();
 	uint32_t getInput();
+
 private:
 	Gpio ** _gpios;
 	const uint8_t _length;
