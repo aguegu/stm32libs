@@ -19,6 +19,9 @@ public:
 	void setGpio(uint8_t index, Gpio & gpio);
 	void init(GPIOMode_TypeDef mode = GPIO_Mode_IN_FLOATING, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
 	void set(uint32_t val);
+	void toggle();
+	uint32_t getOutput();
+	uint32_t getInput();
 private:
 	Gpio ** _gpios;
 	const uint8_t _length;
