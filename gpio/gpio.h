@@ -12,7 +12,8 @@
 
 class Gpio {
 public:
-	Gpio(GPIO_TypeDef *port, uint16_t pin, uint32_t rcc_apb2_periph);
+	/* PORTA: 0, PORTB: 1, PORTC: 2, ...  */
+	Gpio(uint16_t port, uint16_t pin);
 	~Gpio();
 	void init(GPIOMode_TypeDef mode = GPIO_Mode_IN_FLOATING, GPIOSpeed_TypeDef speed = GPIO_Speed_2MHz);
 	void set(BitAction bit);

@@ -5,7 +5,7 @@
  *      Author: agu
  */
 
-#include "st7920/st7920.h"
+#include "st7920.h"
 
 St7920::St7920(Gpio & pin_rs, Gpio & pin_en, Gpio & pin_d4, Gpio & pin_d5,
 	Gpio & pin_d6, Gpio & pin_d7) :

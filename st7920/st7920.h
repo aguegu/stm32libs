@@ -8,8 +8,8 @@
 #ifndef ST7920_H_
 #define ST7920_H_
 
-#include "gpio/gpio.h"
 #include "stm32-template.h"
+//#include "gpio/gpio.h"
 
 class St7920 {
 

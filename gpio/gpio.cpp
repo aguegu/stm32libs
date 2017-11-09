@@ -7,9 +7,10 @@
 
 #include "gpio.h"
 
-Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin, uint32_t rcc_apb2_periph) :
-		_port(port), _pin(pin) {
-	RCC_APB2PeriphClockCmd(rcc_apb2_periph, ENABLE);
+Gpio::Gpio(uint16_t port, uint16_t pin) :
+		_port((GPIO_TypeDef *) (GPIOA_BASE + (GPIOB_BASE - GPIOA_BASE) * (port))),
+		_pin(1 << pin) {
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA << (port), ENABLE);
 }
 
 Gpio::~Gpio() {
@@ -31,7 +32,7 @@ void Gpio::set(BitAction bit) {
 }
 
 void Gpio::set(bool bit) {
-	GPIO_WriteBit(_port, _pin, bit? Bit_SET: Bit_RESET);
+	GPIO_WriteBit(_port, _pin, bit ? Bit_SET : Bit_RESET);
 }
 
 BitAction Gpio::getInput() {

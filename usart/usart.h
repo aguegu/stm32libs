@@ -9,7 +9,8 @@
 #define USART_H_
 
 #include "stm32f10x_usart.h"
-#include "stdlib.h"
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef RING_BUFF
 #define RING_BUFF

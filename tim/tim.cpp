@@ -8,11 +8,14 @@
 #include "tim.h"
 
 Tim::Tim(TIM_TypeDef * tim,
-	uint32_t rcc_apbx_periph,
-	void (*p)(uint32_t, FunctionalState)) :
+	uint32_t rcc_apbx_periph) :
 		_tim(tim) {
-
-	(*p)(rcc_apbx_periph, ENABLE);
+	u32 address = (u32) (_tim);
+	if (address & 0x10000) {
+		RCC_APB2PeriphClockCmd(rcc_apbx_periph, ENABLE);
+	} else {
+		RCC_APB1PeriphClockCmd(rcc_apbx_periph, ENABLE);
+	}
 }
 
 Tim::~Tim() {
@@ -21,8 +24,8 @@ Tim::~Tim() {
 
 void Tim::init(uint32_t real_clock,
 	uint16_t real_period,
-	uint16_t counter_mode,
 	uint16_t clock_division,
+	uint16_t counter_mode,
 	uint8_t repition_counter) {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 
