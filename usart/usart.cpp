@@ -13,18 +13,18 @@ Usart::Usart(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
 		_usart(usart), _buff_size(buff_size), _time_out(time_out) {
 
 	(*rcc_apbx_periph_clock_cmd)(rcc_apbx_periph, ENABLE);
+	uint16_t length = sizeof(uint16_t) * _buff_size;
 
 	_tx_buff.index_write = 0;
 	_tx_buff.index_read = 0;
-	_tx_buff.buffer = (uint16_t *) malloc(sizeof(uint16_t) * _buff_size);
-
-	memset(_tx_buff.buffer, 0, sizeof(uint16_t) * _buff_size);
+	_tx_buff.buffer = (uint16_t *) malloc(length);
 
 	_rx_buff.index_write = 0;
 	_rx_buff.index_read = 0;
-	_rx_buff.buffer = (uint16_t *) malloc(sizeof(uint16_t) * _buff_size);
+	_rx_buff.buffer = (uint16_t *) malloc(length);
 
-	memset(_rx_buff.buffer, 0, sizeof(uint16_t) * _buff_size);
+	memset(_rx_buff.buffer, 0, length);
+	memset(_tx_buff.buffer, 0, length);
 }
 
 Usart::~Usart() {

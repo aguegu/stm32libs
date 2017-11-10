@@ -110,7 +110,7 @@ void St7735r::init() {
 void St7735r::write8(bool is_data, const uint8_t * data, uint16_t length) {
 	_pin_rs.set(is_data ? Bit_SET : Bit_RESET);
 	_pin_ss.set(Bit_RESET);
-	_spi.write8(data, length);
+	_spi.write(data, length);
 	_pin_ss.set(Bit_SET);
 }
 
