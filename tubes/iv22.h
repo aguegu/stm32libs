@@ -8,9 +8,9 @@
 #ifndef IV22_H_
 #define IV22_H_
 
-#include "gpio/gpio.h"
-#include "stdlib.h"
-#include "common/bit_op.h"
+#include "../gpio/gpio.h"
+#include <stdlib.h>
+#include "../common/bit_op.h"
 #include <cstdarg>
 #include <cstdio>
 

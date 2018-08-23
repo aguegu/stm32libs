@@ -7,11 +7,9 @@
 
 #include "usart-rs485.h"
 
-UsartRs485::UsartRs485(USART_TypeDef * usart, uint32_t rcc_apbx_periph,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState), Gpio & de,
+UsartRs485::UsartRs485(u8 sn, Gpio & de,
 		Gpio & re, uint8_t buff_size, uint16_t time_out) :
-		Usart(usart, rcc_apbx_periph, rcc_apbx_periph_clock_cmd, buff_size,
-				time_out), _de(de), _re(re) {
+		Usart(sn, buff_size), _de(de), _re(re), _time_out(time_out) {
 
 }
 

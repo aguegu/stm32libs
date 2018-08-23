@@ -23,48 +23,42 @@ struct ring_buff {
 
 class Usart {
 public:
-	Usart(USART_TypeDef * usart,
-		uint32_t rcc_apbx_periph,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
-		uint8_t buff_size = 128,
-		uint16_t time_out = 4);
+	Usart(u8 sn, u8 buff_size = 128);
 	virtual ~Usart();
 
-	void init(uint32_t baudrate = 9600, uint16_t word_length =
-	USART_WordLength_8b, uint16_t stop_bits = USART_StopBits_1,
-		uint16_t parity = USART_Parity_No,
-		uint16_t mode = USART_Mode_Rx | USART_Mode_Tx,
-		uint16_t hardware_flow_control = USART_HardwareFlowControl_None);
+	void init(uint32_t baudrate = 9600,
+			u16 word_length = USART_WordLength_8b,
+			u16 stop_bits = USART_StopBits_1,
+			u16 parity = USART_Parity_No,
+			u16 mode = USART_Mode_Rx | USART_Mode_Tx,
+			u16 hardware_flow_control = USART_HardwareFlowControl_None);
 
-	uint8_t available(void);
-	uint8_t cached(void);
+	u8 available(void);
+	u8 cached(void);
 
 	virtual void flush();
-	void write(uint16_t c);
+	void write(u16 c);
 	int read(void);
 
-	int timedRead();
+	int timedRead(u8 timeout=4);
 
 	void ithandler();
 
-	void write(const uint8_t * p, uint32_t length);
+	void write(const u8 * p, uint32_t length);
 
-	int readBytes(uint8_t *buffer, int length);
-	int readBytesUntil(char terminator, char *buffer, int length);
+	int readBytes(u8 *buffer, int length, u8 timeout=4);
+	int readBytesUntil(char terminator, char *buffer, int length, u8 timeout=4);
 
-	USART_TypeDef * const base();
-
-protected:
-	virtual void onTXE();
-	virtual void onRXNE();
+	void onTXE();
+	void onRXNE();
+	ITStatus getInterruptStatus(uint16_t interrupt);
 
 private:
-	USART_TypeDef * const _usart;
+	USART_TypeDef * _usart;
 
 	ring_buff _tx_buff;
 	ring_buff _rx_buff;
-	const uint8_t _buff_size;
-	const uint16_t _time_out;
+	const u8 _buff_size;
 };
 
-#endif /* USART_H_ */
+#endif

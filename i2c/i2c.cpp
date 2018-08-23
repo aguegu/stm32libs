@@ -1,11 +1,12 @@
-#include "i2c/i2c.h"
+#include "i2c.h"
 
 #define within(time, fun) for (t = (time); (fun) && --t;)
 
-I2c::I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout,
+I2c::I2c(I2C_TypeDef * i2c, uint16_t flat_timeout,
 		uint16_t long_timeout) :
 		_i2c(i2c), _FLAG_TIMEOUT(flat_timeout), _LONG_TIMEOUT(long_timeout) {
-	RCC_APB1PeriphClockCmd(rcc_apb1periph_i2cx, ENABLE);
+	u32 t = (u32)(i2c - I2C1) << 11;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1 + t, ENABLE);
 }
 
 I2c::~I2c() {
@@ -151,7 +152,7 @@ uint8_t I2c::read(uint8_t slave_address, uint8_t* data, uint32_t length,
 		length = 0;
 	}
 
-	within(_FLAG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF ));
+	within(_FLAG_TIMEOUT, I2C_GetFlagStatus(_i2c, I2C_FLAG_STOPF));
 	if (!t)
 		return 4;
 

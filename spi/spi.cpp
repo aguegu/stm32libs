@@ -89,6 +89,6 @@ void Spi::readWithNop(u16 * in, u16 length) {
 }
 
 
-SPI_TypeDef * const Spi::base() {
+SPI_TypeDef * Spi::base() {
 	return _spi;
 }

@@ -8,16 +8,14 @@
 #ifndef USART_RS485_H_
 #define USART_RS485_H_
 
-#include "usart/usart.h"
-#include "gpio/gpio.h"
+#include "../usart/usart.h"
+#include "../gpio/gpio.h"
 
 #include <cstdlib>
 
 class UsartRs485: public Usart {
 public:
-	UsartRs485(USART_TypeDef * usart,
-		uint32_t rcc_apbx_periph,
-		void (*rcc_apbx_periph_clock_cmd)(uint32_t, FunctionalState),
+	UsartRs485(u8 sn,
 		Gpio & de, Gpio & re,
 		uint8_t buff_size = 128,
 		uint16_t time_out = 4);
@@ -38,6 +36,7 @@ protected:
 private:
 	Gpio & _de;
 	Gpio & _re;
+	uint16_t _time_out;
 };
 
 #endif /* USART_H_ */

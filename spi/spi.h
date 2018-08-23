@@ -31,7 +31,7 @@ public:
 	void configDataSize(u16);
 
 	u16 write(u16);
-	SPI_TypeDef * const base();
+	SPI_TypeDef * base();
 private:
 	SPI_TypeDef * const _spi;
 };

@@ -5,7 +5,7 @@
  *      Author: agu
  */
 
-#include "tubes/iv22.h"
+#include "iv22.h"
 
 const uint8_t Iv22::_font[] = {
 		// 0-9

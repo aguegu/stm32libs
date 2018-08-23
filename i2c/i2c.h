@@ -1,14 +1,14 @@
 #ifndef I2C_H
 #define I2C_H
 
-#include <stm32f10x_i2c.h>
+#include "stm32f10x_i2c.h"
 #include <cstdlib>
 #include <cstring>
 
 class I2c {
 public:
-	I2c(I2C_TypeDef * i2c, uint32_t rcc_apb1periph_i2cx, uint16_t flat_timeout =
-			0x100, uint16_t long_timeout = 0x200);
+	I2c(I2C_TypeDef * i2c, uint16_t flat_timeout =
+			0x100, uint16_t long_timeout = 0x400);
 	~I2c();
 	void init(uint16_t mode = I2C_Mode_I2C, uint32_t clock_speed = 100000,
 			uint16_t ack = I2C_Ack_Enable, uint16_t acknowledged_address = 0,
